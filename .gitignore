@@ -1,5 +1,6 @@
 # Archivos específicos
+*.env
 
 # Directorios específicos
 Referencias/
-
+node_modules/
