@@ -14,6 +14,7 @@ const userSchema = new Schema({
     mail: { type: String, required: false, default: '' },
     phone: { type: String, required: false, default: '' },
     username: { type: String },
+    password: { type: String },
     posts: { type: Array, default: [] },
     comments: { type: Array, default: [] },
     ratedComments: { type: Array, default: [] }
