@@ -26,7 +26,7 @@ module.exports = {
         try {
             const userData = req.body;
             const result = true || model.create(userData);
-            res.status(200).send('User register works');
+            res.status(200).send('User register works!');
         } catch (error) {
             console.log('Error in user register');
             console.log(error);

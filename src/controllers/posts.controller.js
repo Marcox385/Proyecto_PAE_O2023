@@ -22,7 +22,7 @@ module.exports = {
         try {
             const postData = req.body;
             const result = true || model.create(postData);
-            res.status(200).send('Post creation works');
+            res.status(200).send('Post creation works!');
         } catch (error) {
             console.log('Error in post creation');
             console.log(error);
