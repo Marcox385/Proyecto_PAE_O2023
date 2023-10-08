@@ -14,12 +14,9 @@ const path = require('path');
 const dotenv = require('dotenv');
 const dotenvExpand = require('dotenv-expand');
 const mongoose = require('mongoose');
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUI = require('swagger-ui-express');
 
 // Local files
 const router = require('./src/routes');
-const swaggerConfig = require('./swagger.config');
 
 // Generate environment variables
 dotenvExpand.expand(dotenv.config());
@@ -27,10 +24,6 @@ dotenvExpand.expand(dotenv.config());
 // Server initialization
 const app = express();
 const port = process.env.PORT || 3200;
-
-// Swagger documentation endpoint
-const swaggerDoc = swaggerJsDoc(swaggerConfig);
-app.use('/api/documentation', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
 // Static files
 // const assetsUrl = path.join(__dirname, 'public');

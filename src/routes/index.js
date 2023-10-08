@@ -31,8 +31,8 @@ router.get('', (req, res) => {
     res.status(200).send('Entry point works!');
 });
 
-router.use('', express.json()); // For JSON response correct rendering
+router.use('', express.json()); // For possible JSON response correct rendering
 router.use('/api', api);
 
-// Export  router
+// Export router
 module.exports = router;

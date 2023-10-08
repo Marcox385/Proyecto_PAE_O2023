@@ -1,3 +1,14 @@
+/**
+ * Bugs Creators API
+ * 
+ * User controller and model integration
+ * 
+ * Made by:
+ *  IS735003 - Cristian Ochoa Navarrete
+ *  IS727272 - Marco Ricardo Cordero Hernández 
+ */
+
+// Entity model
 const model = require('./../models/user');
 
 module.exports = {
@@ -36,4 +47,4 @@ module.exports = {
         // Suggestion: delete profile picture on user deletion
         res.status(200).send('Users deletion works!');
     }
-}
+};
