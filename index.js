@@ -25,7 +25,7 @@ dotenvExpand.expand(dotenv.config());
 const app = express();
 const port = process.env.PORT || 3200;
 
-// Static files
+// Static files (pending implementation)
 // const assetsUrl = path.join(__dirname, 'public');
 // app.use('/assets', express.static(assetsUrl));
 
@@ -34,15 +34,12 @@ const port = process.env.PORT || 3200;
 app.use(router);
 
 // Database connection first approach
-// mongoose.connect(process.env.DB_URL, { useUnifiedTopology: true }).then(() => {
-//     console.log(`Connected to MongoDB on ${process.env.TARGET_DB} database`);
+mongoose.connect(process.env.DB_URL, { useUnifiedTopology: true }).then(() => {
+    console.log(`Connected to MongoDB on ${process.env.TARGET_DB} database`);
 
-//     app.listen(port, () => {
-//         console.log(`App running on port ${port}`);
-//     });
-// }).catch(err => {
-//     console.log("Failed to connect to MongoDB: ", err);
-// });
-app.listen(port, () => {
-    console.log(`App running on port ${port}`);
+    app.listen(port, () => {
+        console.log(`App running on port ${port}`);
+    });
+}).catch(err => {
+    console.log("Failed to connect to MongoDB: ", err);
 });

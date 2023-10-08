@@ -43,7 +43,7 @@ router.get('', (req, res) => {
 router.use('/users', users);
 router.use('/posts', posts);
 router.use('/comments', comments);
-// router.use('/gptresponses', gptresponses);
+router.use('/gptresponses', gptresponses);
 
 // Swagger documentation endpoint
 const swaggerDoc = swaggerJsDoc(swaggerConfig);

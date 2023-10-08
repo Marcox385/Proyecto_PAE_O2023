@@ -9,7 +9,7 @@
  */
 
 // Entity model
-const model = require('./../models/user');
+const model = require('./../models/comment');
 
 module.exports = {
     // GET
@@ -45,5 +45,5 @@ module.exports = {
     // DELETE
     deleteComment: (req, res) => {
         res.status(200).send('Comment deletion works!');
-    },
+    }
 };

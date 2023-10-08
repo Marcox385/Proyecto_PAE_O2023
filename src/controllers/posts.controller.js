@@ -9,7 +9,7 @@
  */
 
 // Entity model
-const model = require('./../models/user');
+const model = require('./../models/post');
 
 module.exports = {
     // GET
