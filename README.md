@@ -26,7 +26,7 @@ Dependiendo del puerto donde se monte la aplicación, la documentación de la AP
 
 ## Milestones
 - [ ] Crear pantallas para la interfaz
-- [ ] Integrar autenticaciones
+- [x] Integrar autenticaciones
 - [ ] Integrar pruebas para las autenticaciones
 - [ ] Habilitar funcionalidad de registro de usuarios
 - [x] Creación de CRUD's
