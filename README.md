@@ -1,4 +1,3 @@
-
 Tareas Faltantantes:
 
     - Implemetnación de todas las pantallas en angular:
