@@ -1,9 +1,21 @@
 @import 'src/styles.scss';
 
+@import url("https://fonts.googleapis.com/css?family=Poppins");
+
 mat-toolbar {
     background-color: $theme-main;
+
+    img {
+        width: 60px;
+    }
 }
 
 span {
     color: #fff;
+    font-family: "Poppins";
+    font-weight: bold;
+
+    // &::before {
+    //     content: url("assets/icon.png");
+    // }
 }

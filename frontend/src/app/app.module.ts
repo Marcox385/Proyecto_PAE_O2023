@@ -8,12 +8,16 @@ import { FooterComponent } from './layout/footer/footer.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MaterialModule } from './modules/material/material.module';
+import { HomeComponent } from './pages/home/home.component';
+import { LoginComponent } from './pages/login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    HomeComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,9 @@
 $theme-main: #4e2a84;
 
+body {
+    margin: 0;
+    background-color: $theme-main;
+}
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
