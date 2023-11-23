@@ -10,6 +10,7 @@ Tareas Faltantantes:
         Configuración.
     
     - Comprobar funcionamiento de autenticación.
+    - Comprobar funcionamiento de autenticación Google.
 
     - Integración de Multer
 
