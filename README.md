@@ -1,30 +1,33 @@
-Tareas Faltantantes:
+# Tareas Faltantantes
 
-    - Implemetnación de todas las pantallas en angular:
-        Login / Registro
-        Home (visualización de publicaciones). |
-        | Secciones | Filtros.
-        Perfil(es). | Editar perfil
-        Publicación/Comentarios
-        Mensajes privados.
-        Configuración.
-    
-    - Comprobar funcionamiento de autenticación.
-    - Comprobar funcionamiento de autenticación Google.
+## Implementación de todas las pantallas en angular:
+- [ ] Login / Registro
+- [ ] Home (visualización de publicaciones estilo feed)
+- [ ] | Secciones | Filtros
+- [ ] Perfil(es) | Editar perfil
+- [ ] Publicación/Comentarios
+- [ ] Mensajes privados
+- [ ] Configuración
 
-    - Integración de Multer
+## Autenticación
+- [ ] Comprobar funcionamiento de autenticación
+- [ ] Comprobar funcionamiento de autenticación Google
 
-    - Implementar guardianes a pantallas correspondientes.
+## Archivos
+- [ ] Integración de Multer
 
-    - Implementación de google autenticator.
+## Permisos
+- [ ] Implementar guardianes a pantallas correspondientes
+- [ ] Implementación de google autenticator
 
-    - Altas y bajas en general.
+## Sockets
+- [ ] Implementación de sockets para notificaciones
 
-    - Implementación de sockets.
+## Integración con terceros
+- [ ] Twilio (envío de mensajes a través de Whatsapp hacía usuarios)
+- [ ] GPT (sugerencias de respuestas a entradas del foro)
 
-    Integración con terceros
-    - Twilio (envío de mensajes a través de Whatsapp hacía usuarios)
-    - GPT (sugerencias de respuestas a entradas del foro)
+## Otros
+- [ ] Altas y bajas en general
 
-
-    -------------------------- PRUEBAS DE FUNCIONAMIENTO -------------------------
+-------------------------- PRUEBAS DE FUNCIONAMIENTO -------------------------
