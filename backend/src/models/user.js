@@ -10,6 +10,9 @@
 
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
+
+dotenv.config(); // Load environment variables for password salt
 
 const userSchema = new Schema({
     mail: { type: String, required: false, default: '' },
@@ -23,7 +26,7 @@ const userSchema = new Schema({
 
 userSchema.pre('save', async function (next) {
     const user = this;
-    const hash = await bcrypt.hash(user.password, 10);
+    const hash = await bcrypt.hash(user.password, parseInt(process.env.SALT_ROUNDS, 10));
     this.password = hash;
     next();
 });

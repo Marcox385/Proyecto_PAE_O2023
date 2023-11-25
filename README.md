@@ -30,4 +30,7 @@
 ## Otros
 - [ ] Altas y bajas en general
 
--------------------------- PRUEBAS DE FUNCIONAMIENTO -------------------------
+# Pruebas
+- [ ] JWT para inicio de sesión
+- [ ] Subida de imágenes
+- [ ] Reemplazo de imágenes

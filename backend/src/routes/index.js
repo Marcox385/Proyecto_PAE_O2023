@@ -32,7 +32,7 @@ const api = require('./api');
  *       description: API verification route
  */
 router.get('', (req, res) => {
-    res.status(200).send('API is running');
+    res.status(200).send('Backend server is running');
 });
 
 router.post('/signup', passport.authenticate('signup', { session: false }), async (req, res, next) => {
@@ -42,7 +42,7 @@ router.post('/signup', passport.authenticate('signup', { session: false }), asyn
     })
 })
 
-router.post('login', async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
     passport.authenticate('login', async (err, user, info) => {
         try {
             if (err || user) {
@@ -61,7 +61,7 @@ router.post('login', async (req, res, next) => {
     })(req, res, next)
 })
 
-router.get('profile', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res, next) => {
     res.json({
         message: 'Naiz',
         user: req.user,
@@ -69,7 +69,7 @@ router.get('profile', passport.authenticate('jwt', { session: false }), (req, re
     })
 })
 
-router.use('', express.json()); // For possible JSON response correct rendering
+router.use('', express.json()); // For JSON response rendering
 router.use('/api', api);
 
 // Export router

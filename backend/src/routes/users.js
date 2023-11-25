@@ -15,7 +15,19 @@ const router = require('express').Router();
 const controller = require('./../controllers/users.controller');
 
 // Methods
-// TODO: Update swagger below for better readability
+/**
+ * @swagger
+ * /api/users:
+ *  get:
+ *   description: Get all users
+ *   tags:
+ *     - Users
+ *   responses:
+ *     200:
+ *       description: Return all users (id, username, mail, and phone)
+ */
+router.get('', controller.getAllUsers);
+
 /**
  * @swagger
  * /api/users/{mail}:
@@ -35,16 +47,11 @@ const controller = require('./../controllers/users.controller');
  *       description: Mail not provided
  *     404:
  *       description: User not found
- * 
- * /api/users:
- *  get:
- *   description: Get all users
- *   tags:
- *     - Users
- *   responses:
- *     200:
- *       description: Return all users (id, username, mail, and phone)
- * 
+ */
+router.get('/:mail', controller.getUser);
+
+/**
+ * @swagger
  * /api/users/register:
  *  post:
  *   description: Register a single user
@@ -68,7 +75,11 @@ const controller = require('./../controllers/users.controller');
  *   responses:
  *     200:
  *       description: User successfully created
- * 
+ */
+router.post('/register', controller.registerUser);
+
+/**
+ * @swagger
  * /api/users/modify/{mail}:
  *  put:
  *   description: Update a single user
@@ -77,7 +88,11 @@ const controller = require('./../controllers/users.controller');
  *   responses:
  *     200:
  *       description: User successfully updated
- * 
+ */
+router.put('/modify/:mail', controller.modifyUser);
+
+/**
+ * @swagger
  * /api/users/delete/{mail}:
  *  delete:
  *   description: Delete a single user
@@ -86,7 +101,11 @@ const controller = require('./../controllers/users.controller');
  *   responses:
  *     200:
  *       description: User successfully deleted
- *   
+ */
+router.delete('/delete/:mail', controller.deleteUser);
+
+/**
+ * @swagger
  * /api/users/{mail}/posts:
  *  get:
  *   description: Get user's posts
@@ -104,7 +123,11 @@ const controller = require('./../controllers/users.controller');
  *       description: Mail not provided
  *     404:
  *       description: User no
- * 
+ */
+router.get('/:mail/posts', controller.getUserPosts);
+
+/**
+ * @swagger
  * /api/users/{mail}/picture:
  *  get:
  *   description: Get user profile picture
@@ -121,17 +144,8 @@ const controller = require('./../controllers/users.controller');
  *     200:
  *       description: User profile picture successfully updated
  */
-router.get('', controller.getAllUsers);
-router.get('/:mail', controller.getUser);
-router.get('/:mail/posts', controller.getUserPosts);
 router.get('/:mail/picture', controller.getUserPicture);
-
-router.post('/register', controller.registerUser);
-
-router.put('/modify/:mail', controller.modifyUser);
 router.put('/:mail/picture', controller.updateUserPicture);
-
-router.delete('/delete/:mail', controller.deleteUser);
 
 // Export router
 module.exports = router;

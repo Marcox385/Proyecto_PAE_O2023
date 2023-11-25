@@ -34,10 +34,10 @@ const gptresponses = require('./gptresponses');
  *     - API
  *   responses:
  *     200:
- *       description: API Entry endpoint
+ *       description: API Entry verification path
  */
 router.get('', (req, res) => {
-    res.status(200).send('API entry works!');
+    res.status(200).send('API path normal');
 });
 
 router.use('/users', users);

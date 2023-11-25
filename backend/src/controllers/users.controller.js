@@ -11,6 +11,9 @@
 // Entity model
 const model = require('./../models/user');
 const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
+
+dotenv.config(); // Load environment variables for password salt
 
 module.exports = {
     // GET
@@ -106,7 +109,7 @@ module.exports = {
             update = req.body;
 
             if ("password" in update) { // Hash password before updating
-                update.password = await bcrypt.hash(update.password, 10);
+                update.password = await bcrypt.hash(update.password, parseInt(process.env.SALT_ROUNDS, 10));
             }
 
             opts = { new: true }; // Return updated document after operation

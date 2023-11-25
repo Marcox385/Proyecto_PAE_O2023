@@ -10,7 +10,6 @@
 
 // Modules
 const express = require('express');
-// const router = express.Router();
 const path = require('path');
 const dotenv = require('dotenv');
 const dotenvExpand = require('dotenv-expand');
