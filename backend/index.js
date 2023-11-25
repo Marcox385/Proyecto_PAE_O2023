@@ -10,7 +10,6 @@
 
 // Modules
 const express = require('express');
-const path = require('path');
 const dotenv = require('dotenv');
 const dotenvExpand = require('dotenv-expand');
 const mongoose = require('mongoose');
@@ -21,9 +20,10 @@ const router = require('./src/routes');
 // Generate environment variables
 dotenvExpand.expand(dotenv.config());
 
-// Server initialization
+// Server initialization and initial config
 const app = express();
 const port = process.env.PORT || 3200;
+app.use('', express.json()); // For JSON response rendering
 
 // Routes initialization
 app.use(router);

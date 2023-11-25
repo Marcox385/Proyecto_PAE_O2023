@@ -12,65 +12,31 @@
 const express = require('express');
 const router = express.Router();
 
-// Auths
-const passport = require('passport')
-const jwt = require('jsonwebtoken')
-
 // Local routes
 const api = require('./api');
+const auth = require('./auth');
+
+// Auth middlewares
+const { authenticateToken } = require('../middlewares/auth');
 
 // Routes
 /**
  * @swagger
  * /:
  *  get:
- *   description: initial global entry point
+ *   description: Initial global entry point
  *   tags:
  *     - Home
  *   responses:
  *     200:
- *       description: API verification route
+ *       description: Backend verification route
  */
 router.get('', (req, res) => {
     res.status(200).send('Backend server is running');
 });
 
-router.post('/signup', passport.authenticate('signup', { session: false }), async (req, res, next) => {
-    res.json({
-        message: 'Signup succesful',
-        user: req.user,
-    })
-})
-
-router.post('/login', async (req, res, next) => {
-    passport.authenticate('login', async (err, user, info) => {
-        try {
-            if (err || user) {
-                const error = new Error('new Error')
-                return next(error)
-            }
-            req.login(user, { session: false }, async (err) => {
-                if (err) return next(err)
-                const body = { _id: user._id, email: user.email }
-                const token = jwt.sign({ user: body }, 'top_secret')
-                return res.json({ token })
-            })
-        } catch (e) {
-            return next(e)
-        }
-    })(req, res, next)
-})
-
-router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res, next) => {
-    res.json({
-        message: 'Naiz',
-        user: req.user,
-        token: req.query.secret_token,
-    })
-})
-
-router.use('', express.json()); // For JSON response rendering
-router.use('/api', api);
+router.use('/auth', auth);
+router.use('/api', authenticateToken, api);
 
 // Export router
 module.exports = router;

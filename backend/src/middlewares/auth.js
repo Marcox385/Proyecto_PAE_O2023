@@ -1,67 +1,41 @@
-const passport = require('passport');
-const localStrategy = require('passport-local').Strategy;
-const User = require('../models/user');
+/**
+ * Bugs Creators API
+ * 
+ * Auth services middlewares
+ * 
+ * Made by:
+ *  IS735003 - Cristian Ochoa Navarrete
+ *  IS727272 - Marco Ricardo Cordero Hernández 
+ */
 
-const JWTStrategy = require('passport-jwt').Strategy;
-const ExtractJWT = require('passport-jwt').ExtractJwt;
+// Modules
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 
-passport.use('signup',
-    new localStrategy({
-        mail: 'email',
-        phone: 'phone',
-        username: 'usernmae',
-        password: 'password'
-    },
+// Load environment variables
+dotenv.config();
 
-        async (email, phone, username, password, done) => {
-            try {
-                const user = await User.create({ email, password });
-                return done(null, user);
-            } catch (e) {
-                done(e);
-            }
-        }
-    ));
-
-passport.use('login',
-    new localStrategy({
-        mail: 'email',
-        phone: 'phone',
-        username: 'usernmae',
-        password: 'password'
-    },
-
-        async (email, phone, username, password, done) => {
-            try {
-                const user = await User.findOne({ email });
-                if (!user) {
-                    return done(null, false, { message: 'User not found' });
-                }
-
-                const validate = await user.isValidPassword(password);
-
-                if (!validate) {
-                    return done(null, false, { message: 'Wrong password' });
-                }
-
-                return done(null, user, { message: 'Login succesfully' });
-            } catch (e) {
-                return done(e);
-            }
-        }
-    ));
-
-passport.use(new JWTStrategy(
-    {
-        secretOrKey: 'top_secret',
-        jwtFromRequest: ExtractJWT.fromUrlQueryParameter('secret_token')
-    },
-
-    async (token, done) => {
-        try {
-            return done(null, token.user);
-        } catch (e) {
-            done(error);
-        }
+function authenticateToken(req, res, next) {
+    const allowedRoutes = ['/users/register'];
+    if (allowedRoutes.includes(req.path)) {
+        return next();
     }
-));
+
+    const authHeader = req.headers['authorization'];
+
+    if (authHeader) {
+        const token = authHeader.split(' ')[1];
+        jwt.verify(token, process.env.JWT_SECRET_KEY, (err, data) => {
+            if (err) return res.status(403).send('Invalid authorization token.');
+            next();
+        });
+        return;
+    }
+    
+    res.status(401).send('Missing authorization token.');
+}
+
+// Export functions
+module.exports = {
+    authenticateToken
+};
