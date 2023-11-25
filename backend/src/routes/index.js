@@ -11,7 +11,8 @@
 // Modules
 const express = require('express');
 const router = express.Router();
-//auths
+
+// Auths
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
 
@@ -28,16 +29,11 @@ const api = require('./api');
  *     - Home
  *   responses:
  *     200:
- *       description: Home endpoint (further implementation)
+ *       description: API verification route
  */
 router.get('', (req, res) => {
-    res.status(200).send('Entry point works!');
+    res.status(200).send('API is running');
 });
-
-// GET home page
-router.get('/', function (req, res, next) {
-    res.send('Hello world');
-})
 
 router.post('/signup', passport.authenticate('signup', { session: false }), async (req, res, next) => {
     res.json({

@@ -26,12 +26,7 @@ dotenvExpand.expand(dotenv.config());
 const app = express();
 const port = process.env.PORT || 3200;
 
-// Static files (pending implementation)
-// const assetsUrl = path.join(__dirname, 'public');
-// app.use('/assets', express.static(assetsUrl));
-
 // Routes initialization
-// app.use('/api', router); // Investigate further into this
 app.use(router);
 
 // Database connection first approach
