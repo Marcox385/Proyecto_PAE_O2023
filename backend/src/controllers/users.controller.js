@@ -17,7 +17,30 @@ dotenv.config(); // Load environment variables for password salt
 
 module.exports = {
     // GET
-    getAllUsers: (req, res) => {
+    getUser: (req, res) => {
+        username = req.query.username;
+        mail = req.query.mail;
+        phone = req.query.phone;
+
+        if (username || mail || phone) {
+            model.findOne({
+                $or: [
+                    { username: username },
+                    { mail: mail },
+                    { phone: phone }
+                ]
+            }).lean().then(response => {
+                if (response) {
+                    const { _id, username, mail, phone } = response;
+                    res.status(200).send({ _id, username, mail, phone });
+                } else {
+                    res.status(404).send('User not found.');
+                }
+            });
+            return;
+        }
+
+        // Return all users if parameters not passed
         model.find({}).lean().then(response => {
             users = [];
 
@@ -30,35 +53,19 @@ module.exports = {
         });
     },
 
-    getUser: (req, res) => {
-        mail = req.params.mail || false;
+    getUserPosts: (req, res) => {
+        username = req.query.username;
+        mail = req.query.mail;
+        phone = req.query.phone;
 
-        if (mail) {
+        if (username || mail || phone) {
             model.findOne({
                 $or: [
-                    { username: userData.username },
-                    { mail: userData.mail },
-                    { phone: userData.phone }
+                    { username: username },
+                    { mail: mail },
+                    { phone: phone }
                 ]
             }).lean().then(response => {
-                if (response) {
-                    const { username, mail, phone } = response;
-                    res.status(200).send({ username, mail, phone });
-                } else {
-                    res.status(404).send('User not found.');
-                }
-            });
-            return;
-        }
-
-        res.status(400).send('Mail not provided!');
-    },
-
-    getUserPosts: (req, res) => {
-        mail = req.params.mail || false;
-
-        if (mail) {
-            model.findOne({mail: mail}).lean().then(response => {
                 if (response) {
                     const { posts } = response;
                     res.status(200).send(posts);
@@ -69,7 +76,33 @@ module.exports = {
             return;
         }
 
-        res.status(400).send('Mail not provided!');
+        res.status(400).send('User data not provided.');
+    },
+
+    getUserComments: (req, res) => {
+        username = req.query.username;
+        mail = req.query.mail;
+        phone = req.query.phone;
+
+        if (username || mail || phone) {
+            model.findOne({
+                $or: [
+                    { username: username },
+                    { mail: mail },
+                    { phone: phone }
+                ]
+            }).lean().then(response => {
+                if (response) {
+                    const { comments } = response;
+                    res.status(200).send(comments);
+                } else {
+                    res.status(404).send('User not found.');
+                }
+            });
+            return;
+        }
+
+        res.status(400).send('User data not provided.');
     },
 
     getUserPicture: (req, res) => { // TODO: Implement S3 uploading
@@ -109,25 +142,35 @@ module.exports = {
 
     // PUT
     modifyUser: async (req, res) => {
-        mail = req.params.mail || false;
+        username = req.body.username;
 
-        if (mail) {
-            update = req.body;
+        if (username) {
+            newData = req.body.data;
 
-            if ("password" in update) { // Hash password before updating
-                update.password = await bcrypt.hash(update.password, parseInt(process.env.SALT_ROUNDS, 10));
+            if (newData) {
+                // Extract relevant data
+                newData = {
+                    mail: newData.mail,
+                    phone: newData.phone,
+                    password: newData.password
+                }; // Username update not allowed for now because of token regeneration need
+
+                if (newData.password) // Hash password before updating
+                    newData.password = await bcrypt.hash(newData.password, parseInt(process.env.SALT_ROUNDS, 10));
+                
+                opts = { new: true }; // Return updated document after operation
+                doc = await model.findOneAndUpdate({username: username}, newData, opts);
+
+                if (doc) {
+                    res.status(200).send(doc);
+                } else res.status(404).send(`User not found.`);
+                return;
             }
 
-            opts = { new: true }; // Return updated document after operation
-            doc = await model.findOneAndUpdate({mail: mail}, update, opts);
-
-            if (doc) {
-                res.status(200).send(doc);
-            } else res.status(400).send(`User with mail ${mail} not found`);
-            return;
+            return res.status(400).send('New data not provided.');
         }
 
-        res.status(400).send('Mail not provided!');
+        res.status(400).send('Username not provided.');
     },
     
     updateUserPicture: (req, res) => { // TODO: Implement S3 updating
@@ -136,20 +179,27 @@ module.exports = {
 
     // DELETE
     deleteUser: (req, res) => { // TODO: Delete image on S3 bucket
-        // res.status(200).send('Users deletion works!');
-        mail = req.params.mail || false;
+        username = req.body.username;
+        mail = req.body.mail;
+        phone = req.body.phone;
 
-        if (mail) {
-            model.findOneAndDelete({mail: mail}).lean().then(response => {
+        if (username || mail || phone) {
+            model.findOneAndDelete({
+                $or: [
+                    { username: username },
+                    { mail: mail },
+                    { phone: phone }
+                ]
+            }).lean().then(response => {
                 if (response) {
-                    res.status(200).send(`Successfully deleted user with mail ${mail}`);    
+                    res.status(200).send(`Successfully deleted user.`);    
                 } else {
-                    res.status(409).send(`User with mail ${mail} not found`);
+                    res.status(404).send(`User not found`);
                 }
             });
             return;
         }
 
-        res.status(400).send('Mail not provided!');
+        res.status(400).send('User data not provided.');
     }
 };
