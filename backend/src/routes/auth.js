@@ -138,12 +138,12 @@ router.post('/token', (req, res) => {
 
     if (refreshToken) {
         model.findOne({token: refreshToken}).lean().then(response => {
-            if (response) {
+            if (response) { // Refresh token in database
                 jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY, (err, data) => {
                     if (err) return res.status(403).send('Invalid token.');
 
                     const { mail, phone } = data;
-                    accessToken = jwt.sign({username, mail}, process.env.JWT_SECRET_KEY, { expiresIn: '2h' });
+                    accessToken = jwt.sign({mail, phone}, process.env.JWT_SECRET_KEY, { expiresIn: '2h' });
                     res.status(200).send({accessToken});
                 });
             } else {
