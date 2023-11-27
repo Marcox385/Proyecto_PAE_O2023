@@ -4,7 +4,7 @@ import { AuthService } from 'src/app/services/auth.service';
 @Component({
   selector: 'bgc-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss', './login.component2.scss']
 })
 export class LoginComponent {
 

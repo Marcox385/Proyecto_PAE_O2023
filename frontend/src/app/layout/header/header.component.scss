@@ -10,9 +10,16 @@ mat-toolbar {
         width: 60px;
     }
 
+    .links {
+        display: inline-block;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+    }
+
     a {
         color: white;
-
+        margin-right: 10px;
 
         &:hover {
             color: #4E2A94;
