@@ -41,7 +41,8 @@ router.get('', (req, res) => {
 });
 
 router.use('/auth', auth);
-router.use('/api', authenticateToken, api);
+// router.use('/api', authenticateToken, api);
+router.use('/api', api);
 
 // Swagger documentation endpoint
 const swaggerDoc = swaggerJsDoc(swaggerConfig);

@@ -17,8 +17,8 @@ dotenv.config(); // Load environment variables for password salt
 const userSchema = new Schema({
     mail: { type: String, required: false, default: '' },
     phone: { type: String, required: false, default: '' },
-    username: { type: String },
-    password: { type: String },
+    username: { type: String, required: true },
+    password: { type: String, requried: true },
     posts: { type: Array, default: [] },
     comments: { type: Array, default: [] },
     ratedComments: { type: Array, default: [] }

@@ -119,6 +119,10 @@ router.get('/comments', controller.getUserComments);
  *   responses:
  *     200:
  *       description: User successfully created
+ *     400:
+ *       description: User data not provided
+ *     409:
+ *       description: User already exists or external error
  */
 router.post('/register', controller.registerUser);
 

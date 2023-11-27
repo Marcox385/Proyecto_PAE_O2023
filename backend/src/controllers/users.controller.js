@@ -116,6 +116,14 @@ module.exports = {
 
             // Check if user already exists
             if (userData) {
+                // Ignore all other keys
+                userData = {
+                    mail: userData.mail,
+                    phone: userData.phone,
+                    username: userData.username,
+                    password: userData.password
+                };
+
                 model.findOne({
                     $or: [
                         { username: userData.username },
@@ -124,10 +132,10 @@ module.exports = {
                     ]
                 }).lean().then(response => {
                     if (response) { // User already registered
-                        res.status(409).send(`User "${userData.username}" already exists.`);
+                        res.status(409).send(`User already exists.`);
                     } else { // User not registered
                         const result = model.create(userData);
-                        res.status(201).send(`User "${userData.username}" successfully registered.`);
+                        res.status(201).send(`User successfully registered.`);
                     }
                 });
 
@@ -136,7 +144,7 @@ module.exports = {
 
             res.status(400).send('User data not provided.');
         } catch (error) {
-            res.status(409).send('Unable to register user');
+            res.status(409).send('Unable to register user.');
         }
     },
 
@@ -192,10 +200,10 @@ module.exports = {
                 ]
             }).lean().then(response => {
                 if (response) {
-                    res.status(200).send(`Successfully deleted user.`);    
-                } else {
-                    res.status(404).send(`User not found`);
+                    return res.status(200).send(`Successfully deleted user.`);    
                 }
+                
+                res.status(404).send(`User not found`);
             });
             return;
         }
