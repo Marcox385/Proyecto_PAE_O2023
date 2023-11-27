@@ -9,10 +9,11 @@
  */
 
 // Modules
-const express = require('express');
 const dotenv = require('dotenv');
 const dotenvExpand = require('dotenv-expand');
+const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 // Local files
 const router = require('./src/routes');
@@ -24,6 +25,8 @@ dotenvExpand.expand(dotenv.config());
 const app = express();
 const port = process.env.PORT || 3200;
 app.use('', express.json()); // For JSON response rendering
+app.use(cors()); // For frontend access
+app.disable('x-powered-by'); // Hide tech stack
 
 // Routes initialization
 app.use(router);

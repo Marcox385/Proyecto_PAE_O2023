@@ -11,6 +11,11 @@
 // Modules
 const express = require('express');
 const router = express.Router();
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUI = require('swagger-ui-express');
+
+// Swagger configuration file
+const swaggerConfig = require('./../../swagger.config');
 
 // Local routes
 const api = require('./api');
@@ -37,6 +42,10 @@ router.get('', (req, res) => {
 
 router.use('/auth', auth);
 router.use('/api', authenticateToken, api);
+
+// Swagger documentation endpoint
+const swaggerDoc = swaggerJsDoc(swaggerConfig);
+router.use('/documentation', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
 // Export router
 module.exports = router;

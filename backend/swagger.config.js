@@ -16,7 +16,7 @@ module.exports = {
         info: {
             title: 'Bugs Creators API',
             description: 'Backend support API for PAE O2023 project',
-            version: '0.0.1',
+            version: '1.0.0',
             servers: ['http://localhost:' + port]
         }
     },

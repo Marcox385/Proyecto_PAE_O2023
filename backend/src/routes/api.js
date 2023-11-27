@@ -8,13 +8,6 @@
  *  IS727272 - Marco Ricardo Cordero Hernández 
  */
 
-// Modules
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUI = require('swagger-ui-express');
-
-// Local files
-const swaggerConfig = require('./../../swagger.config');
-
 // Express router
 const router = require('express').Router();
 
@@ -44,10 +37,6 @@ router.use('/users', users);
 router.use('/posts', posts);
 router.use('/comments', comments);
 router.use('/gptresponses', gptresponses);
-
-// Swagger documentation endpoint
-const swaggerDoc = swaggerJsDoc(swaggerConfig);
-router.use('/documentation', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
 // Export router
 module.exports = router;

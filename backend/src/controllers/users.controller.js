@@ -34,7 +34,13 @@ module.exports = {
         mail = req.params.mail || false;
 
         if (mail) {
-            model.findOne({mail: mail}).lean().then(response => {
+            model.findOne({
+                $or: [
+                    { username: userData.username },
+                    { mail: userData.mail },
+                    { phone: userData.phone }
+                ]
+            }).lean().then(response => {
                 if (response) {
                     const { username, mail, phone } = response;
                     res.status(200).send({ username, mail, phone });
