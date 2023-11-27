@@ -14,6 +14,10 @@ import { SocialLoginModule, SocialAuthServiceConfig, GoogleSigninButtonModule } 
 import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
 import { environment } from '../environments/environment'
 import { HttpClientModule } from '@angular/common/http';
+import { SidebarComponent } from './layout/sidebar/sidebar.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+
 
 @NgModule({
   declarations: [
@@ -22,6 +26,7 @@ import { HttpClientModule } from '@angular/common/http';
     FooterComponent,
     HomeComponent,
     LoginComponent,
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,7 +35,9 @@ import { HttpClientModule } from '@angular/common/http';
     MaterialModule,
     SocialLoginModule,
     GoogleSigninButtonModule,
-    HttpClientModule
+    HttpClientModule,
+    MatSidenavModule,
+    MatListModule
   ],
   providers: [
     {

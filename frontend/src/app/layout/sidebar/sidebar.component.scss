@@ -1,0 +1,20 @@
+.container {
+    width: 200px;
+    height: 100%;
+    margin: 10px;
+}
+
+.sidebar button {
+    display: block;
+    word-spacing: 5px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border: 2px solid #fff;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+.sidebar button:hover {
+    background-color: #4E2A94;
+    color: #fff;
+}
