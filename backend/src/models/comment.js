@@ -11,9 +11,10 @@
 const { Schema, model } = require('mongoose');
 
 const commentSchema = new Schema({
-    username: { type: String, required: true },
+    user_id: { type: String, required: true },
     description: { type: String, required: true },
-    score: { type: Number, default: 0 }
+    score: { type: Number, default: 0 },
+    rated_by: { type: Array, default: [] }
 }, { timestamps: true });
 
 module.exports = model('comment', commentSchema);

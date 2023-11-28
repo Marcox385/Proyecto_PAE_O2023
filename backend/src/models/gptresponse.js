@@ -11,7 +11,7 @@
 const { Schema, model } = require('mongoose');
 
 const gptResponseSchema = new Schema({
-    description: { type: String, required: true }
+    contents: { type: String, required: true }
 }, { timestamps: true });
 
 module.exports = model('gptresponse', gptResponseSchema);
