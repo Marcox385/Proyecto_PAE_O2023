@@ -71,6 +71,7 @@ router.get('', (req, res) => {
  *       description: Unable to login due to internal conflict
  */
 router.post('/login', (req, res) => {
+    // Get these data ideally from login form
     const { mail, phone, password } = req.body;
     const user = { mail, phone };
     const reqPassword = password;
@@ -83,12 +84,13 @@ router.post('/login', (req, res) => {
     }).lean().then(response => {
         if (response) { // User exists in database
             // Check if password matches in database
-            const { username, password } = response;
+            const { _id, username, password } = response;
             bcrypt.compare(reqPassword, password, function(err, data) {
                 if (err) return res.status(503).send('Unable to login');
 
                 if (data) {
                     // Generate access and refresh tokens for application accessing
+                    user.id = _id;
                     user.username = username;
 
                     const accessToken = jwt.sign(user, process.env.JWT_SECRET_KEY, { expiresIn: '2h' });
@@ -115,7 +117,7 @@ router.post('/login', (req, res) => {
  * @swagger
  * /auth/token:
  *  post:
- *   description: Regenerate access token
+ *   description: Regenerate access token. Required after user data updating.
  *   tags:
  *     - Auth
  *   parameters:
@@ -144,8 +146,8 @@ router.post('/token', (req, res) => {
                 jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY, (err, data) => {
                     if (err) return res.status(403).send('Invalid token.');
 
-                    const { username, mail, phone } = data;
-                    const user = {username, mail, phone};
+                    const { id, username, mail, phone } = data;
+                    const user = {id, username, mail, phone};
                     accessToken = jwt.sign(user, process.env.JWT_SECRET_KEY, { expiresIn: '2h' });
                     res.status(200).send({accessToken});
                 });

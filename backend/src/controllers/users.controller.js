@@ -18,13 +18,15 @@ dotenv.config(); // Load environment variables for password salt
 module.exports = {
     // GET
     getUser: (req, res) => {
-        username = req.query.username;
-        mail = req.query.mail;
-        phone = req.query.phone;
+        const user_id = req.query.user_id;
+        const username = req.query.username;
+        const mail = req.query.mail;
+        const phone = req.query.phone;
 
-        if (username || mail || phone) {
+        if (user_id || username || mail || phone) {
             model.findOne({
                 $or: [
+                    { _id: user_id },
                     { username: username },
                     { mail: mail },
                     { phone: phone }
@@ -53,33 +55,7 @@ module.exports = {
         });
     },
 
-    getUserPosts: (req, res) => {
-        username = req.query.username;
-        mail = req.query.mail;
-        phone = req.query.phone;
-
-        if (username || mail || phone) {
-            model.findOne({
-                $or: [
-                    { username: username },
-                    { mail: mail },
-                    { phone: phone }
-                ]
-            }).lean().then(response => {
-                if (response) {
-                    const { posts } = response;
-                    res.status(200).send(posts);
-                } else {
-                    res.status(404).send('User not found.');
-                }
-            });
-            return;
-        }
-
-        res.status(400).send('User data not provided.');
-    },
-
-    getUserComments: (req, res) => {
+    getUserComments: (req, res) => { // TODO: Move to comments controller
         username = req.query.username;
         mail = req.query.mail;
         phone = req.query.phone;
@@ -116,13 +92,11 @@ module.exports = {
 
             // Check if user already exists
             if (userData) {
-                // Ignore all other keys
-                userData = {
-                    mail: userData.mail,
-                    phone: userData.phone,
-                    username: userData.username,
-                    password: userData.password
-                };
+                if (!userData.mail && !userData.phone)
+                    return res.status(400).send('Provide at least mail or phone.');
+
+                if (!userData.username)
+                    return res.status(400).send('Username not provided.');
 
                 model.findOne({
                     $or: [
@@ -134,7 +108,15 @@ module.exports = {
                     if (response) { // User already registered
                         res.status(409).send(`User already exists.`);
                     } else { // User not registered
-                        const result = model.create(userData);
+                        // Ignore all other keys
+                        const newUserData = {
+                            mail: userData.mail,
+                            phone: userData.phone,
+                            username: userData.username,
+                            password: userData.password
+                        };
+
+                        const result = model.create(newUserData);
                         res.status(201).send(`User successfully registered.`);
                     }
                 });
@@ -149,10 +131,15 @@ module.exports = {
     },
 
     // PUT
-    modifyUser: async (req, res) => {
-        username = req.body.username;
+    modifyUser: (req, res) => {
+        /**
+         *  NOTE: Method doesn't handle same data for same user case.
+         *        Handle from frontend form directly
+         */
 
-        if (username) {
+        const user_id = req.body.user_id;
+
+        if (user_id) {
             newData = req.body.data;
 
             if (newData) {
@@ -160,25 +147,46 @@ module.exports = {
                 newData = {
                     mail: newData.mail,
                     phone: newData.phone,
+                    username: newData.username,
                     password: newData.password
-                }; // Username update not allowed for now because of token regeneration need
+                };
 
-                if (newData.password) // Hash password before updating
-                    newData.password = await bcrypt.hash(newData.password, parseInt(process.env.SALT_ROUNDS, 10));
-                
-                opts = { new: true }; // Return updated document after operation
-                doc = await model.findOneAndUpdate({username: username}, newData, opts);
+                model.findOne({
+                    $or: [
+                        { mail: newData.mail },
+                        { phone: newData.phone },
+                        { username: newData.username },
+                    ]
+                }).lean().then(async response => {
+                    // User new data conflicts with db
+                    if (response) {
+                        dataInUse = {};
 
-                if (doc) {
-                    res.status(200).send(doc);
-                } else res.status(404).send(`User not found.`);
+                        if (response.mail) dataInUse.mail = true;
+                        if (response.phone) dataInUse.phone = true;
+                        if (response.username) dataInUse.username = true;
+
+                        return res.status(409).send(dataInUse);
+                    }
+
+                    if (newData.password) // Hash password before updating
+                        newData.password = await bcrypt.hash(newData.password, parseInt(process.env.SALT_ROUNDS, 10));
+                    
+                    // Ignore null fields and return updated document after operation
+                    opts = { new: true, omitUndefined: true };
+                    doc = await model.findByIdAndUpdate(user_id, newData, opts);
+
+                    if (doc) {
+                        res.status(200).send(doc);
+                    } else res.status(404).send(`User not found.`);
+                });
                 return;
             }
 
             return res.status(400).send('New data not provided.');
         }
 
-        res.status(400).send('Username not provided.');
+        res.status(400).send('User id not provided.');
     },
     
     updateUserPicture: (req, res) => { // TODO: Implement S3 updating
@@ -187,13 +195,15 @@ module.exports = {
 
     // DELETE
     deleteUser: (req, res) => { // TODO: Delete image on S3 bucket
-        username = req.body.username;
-        mail = req.body.mail;
-        phone = req.body.phone;
+        const user_id = req.body.user_id;
+        const username = req.body.username;
+        const mail = req.body.mail;
+        const phone = req.body.phone;
 
-        if (username || mail || phone) {
+        if (user_id || username || mail || phone) {
             model.findOneAndDelete({
                 $or: [
+                    { _id: user_id },
                     { username: username },
                     { mail: mail },
                     { phone: phone }

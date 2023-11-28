@@ -15,10 +15,10 @@ const userModel = require('./../models/user');
 module.exports = {
     // GET
     getPost: (req, res) => {
-        id = req.query.id;
+        post_id = req.query.post_id;
 
-        if (id) {
-            postModel.findOne({_id: id}).lean().then(response => {
+        if (post_id) {
+            postModel.findOne({_id: post_id}).lean().then(response => {
                 if (response) {
                     const { _id, title, description, labels } = response;
                     res.status(200).send({ _id, title, description, labels });
@@ -42,26 +42,76 @@ module.exports = {
         });
     },
 
+    getUserPosts: (req, res) => {
+        const user_id = req.params.user_id || req.query.user_id;
+        const username = req.query.username;
+        const mail = req.query.mail;
+        const phone = req.query.phone;
+
+        if (user_id || username || mail || phone) {
+            userModel.findOne({
+                $or: [
+                    { _id: user_id },
+                    { username: username },
+                    { mail: mail },
+                    { phone: phone }
+                ]
+            }).lean().then(response => {
+                if (response) { // User found in database
+                    postModel.find({user_id: response._id}).lean().then(response => {
+                        if (response) { 
+                            posts = [];
+        
+                            response.forEach(post => 
+                                posts.push({
+                                    id: post._id,
+                                    title: post.title,
+                                    description: post.description,
+                                    labels: post.labels
+                                })
+                            );
+                            
+                            res.status(200).send(posts);
+                        }
+                    });
+                    return;
+                }
+
+                return res.status(404).send('User not found.');
+            });
+            return;
+        }
+
+        res.status(400).send('User data not provided.');
+    },
+
     // POST
     createPost: (req, res) => {
         try {
+            const user_id = req.body.user_id;
             const username = req.body.username;
 
-            if (username) {
-                userModel.findOne({username: username}).lean().then(response => {
+            if (user_id || username) {
+                userModel.findOne({
+                    $or: [
+                        { _id: user_id },
+                        { username: username },
+                    ]
+                }).lean().then(async response => {
                     if (!response) return res.status(404).send('User not found.');
 
                     postData = req.body.postData;
                     if (postData) {
                         // Ignore all other keys
                         postData = {
+                            user_id: response._id,
                             title: postData.title,
                             description: postData.description,
                             labels: postData.labels
                         };
 
-                        const result = postModel.create(postData);
-                        return res.status(201).send(`Post successfully registered.`);
+                        const result = await postModel.create(postData);
+                        return res.status(201).send({post_id: result._id});
                     }
 
                     res.status(400).send('Post data not provided.');
@@ -77,10 +127,10 @@ module.exports = {
 
     // PUT
     editPost: async (req, res) => {
-        const postID = req.body.id;
+        const post_id = req.body.post_id;
         const postData = req.body.postData;
 
-        if (postID) {
+        if (post_id) {
             if (postData) {
                 // Ignore all other keys
                 newData = {
@@ -89,8 +139,9 @@ module.exports = {
                     labels: postData.labels
                 };
 
-                opts = { new: true }; // Return updated document after operation
-                doc = await postModel.findOneAndUpdate({_id: postID}, newData, opts);
+                // Ignore null fields and return updated document after operation
+                opts = { new: true, omitUndefined: true };
+                doc = await postModel.findByIdAndUpdate(post_id, newData, opts);
 
                 if (doc) {
                     res.status(200).send(doc);
@@ -106,10 +157,10 @@ module.exports = {
 
     // DELETE
     deletePost: (req, res) => {
-        const postID = req.body.id;
+        const post_id = req.body.post_id;
 
-        if (postID) {
-            postModel.findOneAndDelete({_id: postID}).lean().then(response => {
+        if (post_id) {
+            postModel.findByIdAndDelete(post_id).lean().then(response => {
                 if (response) {
                     return res.status(200).send(`Successfully deleted post.`);    
                 }

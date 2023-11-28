@@ -36,14 +36,57 @@ router.get('', controller.getPost);
 
 /**
  * @swagger
+ * /api/posts/{user_id}:
+ *  get:
+ *   description: Get user's posts
+ *   tags:
+ *     - Users
+ *   parameters:
+ *     - in: path
+ *       name: user_id
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: user_id
+ *       type: string
+ *     - in: query
+ *       name: username
+ *       type: string
+ *     - in: query
+ *       name: mail
+ *       type: string
+ *     - in: query
+ *       name: phone
+ *       type: string
+ *   responses:
+ *     200:
+ *       description: Get user's posts list
+ *     400:
+ *       description: User data not provided
+ *     404:
+ *       description: User not found
+ */
+router.get('/:user_id', controller.getUserPosts);
+
+/**
+ * @swagger
  * /api/posts/new:
  *  post:
  *   description: Register a single post
  *   tags:
  *     - Posts
+ *   schema:
+ *     type: object
+ *     properties:
+ *       user_id:
+ *         type: string
+ *       username:
+ *         type: string
+ *       postData:
+ *         type: object
  *   responses:
  *     201:
- *       description: Post successfully created
+ *       description: Post successfully created, id returned
  *     400:
  *       description: Username or post data not provided
  *     404:
@@ -60,6 +103,17 @@ router.post('/new', controller.createPost);
  *   description: Update a single post
  *   tags:
  *     - Posts
+ *   parameters:
+ *     - in: body
+ *       name: data
+ *       description: username and new data
+ *       schema:
+ *         type: object
+ *         properties:
+ *           post_id:
+ *             type: string
+ *           postData:
+ *             type: object
  *   responses:
  *     200:
  *       description: Post successfully updated
@@ -77,6 +131,11 @@ router.put('/edit', controller.editPost);
  *   description: Delete a single post
  *   tags:
  *     - Posts
+ *   schema:
+ *     type: object
+ *     properties:
+ *       post_id:
+ *         type: string
  *   responses:
  *     200:
  *       description: Post successfully deleted

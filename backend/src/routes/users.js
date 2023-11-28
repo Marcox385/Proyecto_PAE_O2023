@@ -24,6 +24,9 @@ const controller = require('./../controllers/users.controller');
  *     - Users
  *   parameters:
  *     - in: query
+ *       name: user_id
+ *       type: string
+ *     - in: query
  *       name: username
  *       type: string
  *     - in: query
@@ -40,14 +43,18 @@ const controller = require('./../controllers/users.controller');
  */
 router.get('/', controller.getUser);
 
+// TODO: Implement
 /**
  * @swagger
- * /api/users/posts:
+ * /api/users/picture:
  *  get:
- *   description: Get user's posts
+ *   description: Get user profile picture
  *   tags:
  *     - Users
  *   parameters:
+ *     - in: query
+ *       name: user_id
+ *       type: string
  *     - in: query
  *       name: username
  *       type: string
@@ -59,13 +66,9 @@ router.get('/', controller.getUser);
  *       type: string
  *   responses:
  *     200:
- *       description: Get user's posts list
- *     400:
- *       description: User data not provided
- *     404:
- *       description: User not found
+ *       description: Retrieve remotely stored user picture
  */
-router.get('/posts', controller.getUserPosts);
+router.get('/picture', controller.getUserPicture);
 
 /**
  * @swagger
@@ -92,7 +95,7 @@ router.get('/posts', controller.getUserPosts);
  *     404:
  *       description: User not found
  */
-router.get('/comments', controller.getUserComments);
+router.get('/comments', controller.getUserComments); // TODO: Move to comments route
 
 /**
  * @swagger
@@ -120,7 +123,7 @@ router.get('/comments', controller.getUserComments);
  *     200:
  *       description: User successfully created
  *     400:
- *       description: User data not provided
+ *       description: User data not provided, missing mail and phone, or missing username
  *     409:
  *       description: User already exists or external error
  */
@@ -130,7 +133,7 @@ router.post('/register', controller.registerUser);
  * @swagger
  * /api/users/modify:
  *  put:
- *   description: Update a single user
+ *   description: Update a single user (Doesn't handle same data from same user)
  *   tags:
  *     - Users
  *   parameters:
@@ -140,7 +143,7 @@ router.post('/register', controller.registerUser);
  *       schema:
  *         type: object
  *         properties:
- *           username:
+ *           user_id:
  *             type: string
  *           data:
  *             type: object
@@ -148,11 +151,36 @@ router.post('/register', controller.registerUser);
  *     200:
  *       description: User successfully updated
  *     400:
- *       description: Username or new data not provided
+ *       description: User id or new data not provided
  *     404:
  *       description: User not found
+ *     409:
+ *       description: New username, mail, or phone already in use
  */
 router.put('/modify', controller.modifyUser);
+
+// TODO: Implement
+/**
+ * @swagger
+ * /api/users/picture:
+ *  put:
+ *   description: Update user profile picture
+ *   tags:
+ *     - Users
+ *   parameters:
+ *     - in: body
+ *       name: data
+ *       description: user data
+ *       schema:
+ *         type: object
+ *         properties:
+ *           user_id:
+ *             type: string
+ *   responses:
+ *     200:
+ *       description: User profile picture successfully updated
+ */
+router.put('/picture', controller.updateUserPicture);
 
 /**
  * @swagger
@@ -168,6 +196,8 @@ router.put('/modify', controller.modifyUser);
  *       schema:
  *         type: object
  *         properties:
+ *           user_id:
+ *             type: string
  *           username:
  *             type: string
  *           mail:
@@ -183,40 +213,6 @@ router.put('/modify', controller.modifyUser);
  *       description: User not found
  */
 router.delete('/delete', controller.deleteUser);
-
-/**
- * @swagger
- * /api/users/picture:
- *  get:
- *   description: Get user profile picture
- *   tags:
- *     - Users
- *   parameters:
- *     - in: query
- *       name: username
- *       type: string
- *   responses:
- *     200:
- *       description: Retrieve remotely stored user picture
- *  put:
- *   description: Update user profile picture
- *   tags:
- *     - Users
- *   parameters:
- *     - in: body
- *       name: data
- *       description: user data
- *       schema:
- *         type: object
- *         properties:
- *           username:
- *             type: string
- *   responses:
- *     200:
- *       description: User profile picture successfully updated
- */
-router.get('/picture', controller.getUserPicture);
-router.put('/picture', controller.updateUserPicture);
 
 // Export router
 module.exports = router;

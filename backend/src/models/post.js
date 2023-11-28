@@ -12,8 +12,8 @@ const { Schema, model } = require('mongoose');
 
 const postSchema = new Schema({
     user_id: { type: String, required: true },
-    title: { type: String, required: true },
-    description: { type: String, required: true },
+    title: { type: String, required: true, maxLength: 150 },
+    description: { type: String, required: true, maxLength: 30000 },
     labels: { type: Array, default: [], validate: [LabelsLimit, 'Maximum labels exceeded']},
     GPTResponses: { type: Array, default: [], validate: [GPTResponsesLimit, 'AI responses exceeded'] },
     notifyUser: { type: Boolean, default: false }
