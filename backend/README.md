@@ -25,11 +25,11 @@ Dependiendo del puerto donde se monte la aplicación, la documentación de la AP
 > <localhost:{puerto}/api/documentation>
 
 ## Milestones
-- [ ] Crear pantallas para la interfaz
+- [ ] ~~Crear pantallas para la interfaz~~ (Removido)
 - [x] Integrar autenticaciones
 - [ ] Integrar pruebas para las autenticaciones
-- [ ] Habilitar funcionalidad de registro de usuarios
+- [x] Habilitar funcionalidad de registro de usuarios
 - [x] Creación de CRUD's
 - [ ] Integración de CRUD's
 - [ ] Pruebas integrales
-- [ ] Despliegue
+- [x] Despliegue
