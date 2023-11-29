@@ -19,23 +19,52 @@ const controller = require('./../controllers/gptresponses.controller');
  * @swagger
  * /api/gptresponses:
  *  get:
- *   description: Get a single GPT response
+ *   description: Get a single post GPT responses
  *   tags:
  *     - GPT Responses
+ *   parameters:
+ *     - in: query
+ *       name: post_id
+ *       type: string
+ *     - in: path
+ *       name: post_id
+ *       schema:
+ *         type: string
  *   responses:
  *     200:
- *       description: Return GPT response
- * 
+ *       description: Return all GPT response
+ *     400:
+ *       description: Post id not provided
+ *     404:
+ *       description: Post not found
+ */
+router.get('', controller.getGPTResponses);
+
+/**
+ * @swagger
+ * /api/gptresponses:
  *  post:
  *   description: Register a single GPT response
  *   tags:
  *     - GPT Responses
+ *   parameters:
+ *     - in: body
+ *       name: id
+ *       description: post id
+ *       schema:
+ *         type: object
+ *         properties:
+ *           post_id:
+ *             type: string
  *   responses:
  *     200:
  *       description: GPT response successfully registered
+ *     404:
+ *       description: Post not found
+ *     503:
+ *       description: Unable to generate GPT answer
  */
-router.get('', controller.getGPTResponse);
-router.post('', controller.GPTCall);
+router.post('/new', controller.GPTCall);
 
 // Export router
 module.exports = router;

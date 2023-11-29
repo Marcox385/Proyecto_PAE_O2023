@@ -110,7 +110,7 @@ module.exports = {
                         };
 
                         const result = await postModel.create(post_data);
-                        return res.status(201).send({post_id: result._id});
+                        return res.status(201).send(result);
                     }
 
                     res.status(400).send('Post data not provided.');

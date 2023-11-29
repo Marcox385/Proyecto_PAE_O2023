@@ -11,6 +11,7 @@
 const { Schema, model } = require('mongoose');
 
 const gptResponseSchema = new Schema({
+    post_id: { type: String, required: true },
     contents: { type: String, required: true }
 }, { timestamps: true });
 
