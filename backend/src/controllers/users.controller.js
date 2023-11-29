@@ -8,10 +8,12 @@
  *  IS727272 - Marco Ricardo Cordero Hernández 
  */
 
-// Entity model
-const model = require('./../models/user');
+// Modules
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
+
+// Entity model
+const model = require('./../models/user');
 
 dotenv.config(); // Load environment variables for password salt
 

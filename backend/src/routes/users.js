@@ -72,33 +72,6 @@ router.get('/picture', controller.getUserPicture);
 
 /**
  * @swagger
- * /api/users/comments:
- *  get:
- *   description: Get user's comments
- *   tags:
- *     - Users
- *   parameters:
- *     - in: query
- *       name: username
- *       type: string
- *     - in: query
- *       name: mail
- *       type: string
- *     - in: query
- *       name: phone
- *       type: string
- *   responses:
- *     200:
- *       description: Get user's comments list
- *     400:
- *       description: User data not provided
- *     404:
- *       description: User not found
- */
-router.get('/comments', controller.getUserComments); // TODO: Move to comments route
-
-/**
- * @swagger
  * /api/users/register:
  *  post:
  *   description: Register a single user
