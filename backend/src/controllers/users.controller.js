@@ -151,7 +151,7 @@ module.exports = {
 
             if (data) {
                 // Extract relevant data
-                data = {
+                const newData = {
                     mail: data.mail,
                     phone: data.phone,
                     username: data.username,
@@ -182,7 +182,7 @@ module.exports = {
                     
                     // Ignore null fields and return updated document after operation
                     opts = { new: true, omitUndefined: true };
-                    doc = await userModel.updateOne({ user_id }, newData, opts);
+                    doc = await userModel.findByIdAndUpdate(user_id, newData, opts);
 
                     if (doc) {
                         res.status(200).send(doc);

@@ -69,7 +69,7 @@ router.get('/', controller.getUsers);
  *           password:
  *             type: string
  *   responses:
- *     200:
+ *     201:
  *       description: User successfully created
  *     400:
  *       description: User data not provided, missing mail and phone, or missing username
@@ -95,8 +95,12 @@ router.post('/register', controller.registerUser);
  *           user_id:
  *             type: string
  *   responses:
- *     200:
+ *     201:
  *       description: User profile picture successfully uploaded
+ *     400:
+ *       description: Error on image upload
+ *     422:
+ *       description: Image extension not supported
  */
 router.post('/picture', profile_picture.single('file'), controller.uploadUserPicture);
 
@@ -114,10 +118,14 @@ router.post('/picture', profile_picture.single('file'), controller.uploadUserPic
  *       schema:
  *         type: object
  *         properties:
- *           user_id:
+ *           username:
  *             type: string
- *           data:
- *             type: object
+ *           mail:
+ *             type: string
+ *           phone:
+ *             type: string
+ *           password:
+ *             type: string
  *   responses:
  *     200:
  *       description: User successfully updated
