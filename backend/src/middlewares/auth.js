@@ -11,6 +11,7 @@
 // Modules
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const msg = require('./../helpers/msg');
 
 // Load environment variables
 dotenv.config();
@@ -26,13 +27,15 @@ function authenticateToken(req, res, next) {
     if (authHeader) {
         const token = authHeader.split(' ')[1];
         jwt.verify(token, process.env.JWT_SECRET_KEY, (err, data) => {
-            if (err) return res.status(403).send('Invalid authorization token.');
+            if (err) return res.status(403).send(msg('Invalid authorization token.'));
+
+            req.user = data;
             next();
         });
         return;
     }
     
-    res.status(401).send('Missing authorization token.');
+    res.status(401).send(msg('Missing authorization token.'));
 }
 
 // Export functions

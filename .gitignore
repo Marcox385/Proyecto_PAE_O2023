@@ -2,6 +2,7 @@
 *.env
 
 # Directorios específicos
+.vscode/
 Referencias/
 node_modules/
-.vscode/
+backend/imgs/

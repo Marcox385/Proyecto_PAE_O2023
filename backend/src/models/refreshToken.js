@@ -1,7 +1,7 @@
 /**
  * Bugs Creators API
  * 
- * User entity schema
+ * Refresh token entity schema
  * 
  * Made by:
  *  IS735003 - Cristian Ochoa Navarrete

@@ -11,22 +11,26 @@
 // Modules
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
+const msg = require('./../helpers/msg');
 
-// Entity model
-const model = require('./../models/user');
+// Entity models
+const userModel = require('./../models/user');
+const pictureModel = require('./../models/profilePicture');
 
 dotenv.config(); // Load environment variables for password salt
 
 module.exports = {
     // GET
-    getUser: (req, res) => {
-        const user_id = req.query.user_id;
+    getUsers: (req, res) => {
+        const user_id = req.user.id || req.query.id;
         const username = req.query.username;
         const mail = req.query.mail;
         const phone = req.query.phone;
 
         if (user_id || username || mail || phone) {
-            model.findOne({
+            userModel.findOne({
                 $or: [
                     { _id: user_id },
                     { username: username },
@@ -35,58 +39,28 @@ module.exports = {
                 ]
             }).lean().then(response => {
                 if (response) {
-                    const { _id, username, mail, phone } = response;
-                    res.status(200).send({ _id, username, mail, phone });
+                    const { username, mail, phone } = response;
+                    res.status(200).send({ username, mail, phone });
                 } else {
-                    res.status(404).send('User not found.');
+                    res.status(404).send(msg('User not found.'));
                 }
             });
             return;
         }
 
         // Return all users if parameters not passed
-        model.find({}).lean().then(response => {
+        userModel.find({}).lean().then(response => {
             users = [];
 
             response.forEach(item => {
-                const { _id, username, mail, phone } = item;
-                users.push({_id, username, mail, phone});
+                const { username, mail, phone } = item;
+                users.push({username, mail, phone});
             });
 
             res.status(200).send(users);
         });
     },
-
-    getUserComments: (req, res) => { // TODO: Move to comments controller
-        username = req.query.username;
-        mail = req.query.mail;
-        phone = req.query.phone;
-
-        if (username || mail || phone) {
-            model.findOne({
-                $or: [
-                    { username: username },
-                    { mail: mail },
-                    { phone: phone }
-                ]
-            }).lean().then(response => {
-                if (response) {
-                    const { comments } = response;
-                    res.status(200).send(comments);
-                } else {
-                    res.status(404).send('User not found.');
-                }
-            });
-            return;
-        }
-
-        res.status(400).send('User data not provided.');
-    },
-
-    getUserPicture: (req, res) => { // TODO: Implement S3 uploading
-        res.status(200).send('Image retrieval works');
-    },
-
+    
     // POST
     registerUser: (req, res) => {
         try {
@@ -94,13 +68,13 @@ module.exports = {
 
             // Check if user already exists
             if (userData) {
-                if (!userData.mail && !userData.phone)
-                    return res.status(400).send('Provide at least mail or phone.');
-
                 if (!userData.username)
-                    return res.status(400).send('Username not provided.');
+                    return res.status(400).send(msg('Username not provided.'));
 
-                model.findOne({
+                if (!userData.mail && !userData.phone)
+                    return res.status(400).send(msg('Provide at least mail or phone.'));
+
+                userModel.findOne({
                     $or: [
                         { username: userData.username },
                         { mail: userData.mail },
@@ -108,59 +82,90 @@ module.exports = {
                     ]
                 }).lean().then(response => {
                     if (response) { // User already registered
-                        res.status(409).send(`User already exists.`);
+                        res.status(409).send(msg('User already exists.'));
                     } else { // User not registered
                         // Ignore all other keys
                         const newUserData = {
                             mail: userData.mail,
                             phone: userData.phone,
                             username: userData.username,
-                            password: userData.password
+                            password: userData.password // Hashed in userModel
                         };
 
-                        const result = model.create(newUserData);
-                        res.status(201).send(`User successfully registered.`);
+                        const result = userModel.create(newUserData);
+
+                        if (result) return res.status(201).send(msg('User successfully registered.'));
+                        return res.status(409).send(msg('Unable to register user.'));
                     }
                 });
 
                 return;
             }
 
-            res.status(400).send('User data not provided.');
+            res.status(400).send(msg('User data not provided.'));
         } catch (error) {
-            res.status(409).send('Unable to register user.');
+            res.status(409).send(msg('Unable to register user.'));
         }
+    },
+
+    uploadUserPicture: (req, res) => {
+        const user_id = req.user.id;
+        const file = req.file;
+
+        // Picture extension not valid
+        if (!file)
+            return res.status(422).send(msg('Image type not supported.'));
+        
+        const ext = file.originalname.split('.').pop();
+        pictureModel.findOneAndUpdate(
+            { user_id: user_id },
+            { ext: ext },
+            { upsert: true }
+        ).then(response => {
+            // Delete previous image if new image extension is different
+            if (response.ext !== ext) {
+                const uri = path.join(__dirname, '..', '..', 'imgs', user_id + '.' + response.ext);
+                fs.unlinkSync(uri);
+            }
+
+            res.status(201).send(msg('Image uploaded succesfully.'));
+        }).catch(err => {
+            const uri = path.join(__dirname, '..', '..', 'imgs', req.file.filename);
+            fs.unlinkSync(uri); // Delete local image file
+            res.status(400).send(msg('Error on image upload', err));
+        });
     },
 
     // PUT
     modifyUser: (req, res) => {
         /**
-         *  NOTE: Method doesn't handle same data for same user case.
+         *  NOTE: Method doesn't handle unmodified user data
          *        Handle from frontend form directly
+         *        (Will throw an error otherwise)
          */
 
-        const user_id = req.body.user_id;
+        const user_id = req.user.id;
 
         if (user_id) {
-            newData = req.body.data;
+            data = req.body;
 
-            if (newData) {
+            if (data) {
                 // Extract relevant data
-                newData = {
-                    mail: newData.mail,
-                    phone: newData.phone,
-                    username: newData.username,
-                    password: newData.password
+                data = {
+                    mail: data.mail,
+                    phone: data.phone,
+                    username: data.username,
+                    password: data.password
                 };
 
-                model.findOne({
+                // Check if new data is already on db
+                userModel.findOne({
                     $or: [
                         { mail: newData.mail },
                         { phone: newData.phone },
                         { username: newData.username },
                     ]
                 }).lean().then(async response => {
-                    // User new data conflicts with db
                     if (response) {
                         dataInUse = {};
 
@@ -171,16 +176,17 @@ module.exports = {
                         return res.status(409).send(dataInUse);
                     }
 
-                    if (newData.password) // Hash password before updating
+                    // Hash password before updating
+                    if (newData.password)
                         newData.password = await bcrypt.hash(newData.password, parseInt(process.env.SALT_ROUNDS, 10));
                     
                     // Ignore null fields and return updated document after operation
                     opts = { new: true, omitUndefined: true };
-                    doc = await model.findByIdAndUpdate(user_id, newData, opts);
+                    doc = await userModel.updateOne({ user_id }, newData, opts);
 
                     if (doc) {
                         res.status(200).send(doc);
-                    } else res.status(404).send(`User not found.`);
+                    } else res.status(404).send(msg(`User not found.`));
                 });
                 return;
             }
@@ -188,38 +194,30 @@ module.exports = {
             return res.status(400).send('New data not provided.');
         }
 
-        res.status(400).send('User id not provided.');
-    },
-    
-    updateUserPicture: (req, res) => { // TODO: Implement S3 updating
-        res.status(200).send('Users profile picture works!');
+        res.status(400).send(msg('User id not provided.'));
     },
 
     // DELETE
-    deleteUser: (req, res) => { // TODO: Delete image on S3 bucket
-        const user_id = req.body.user_id;
-        const username = req.body.username;
-        const mail = req.body.mail;
-        const phone = req.body.phone;
+    deleteUser: async (req, res) => {
+        const user_id = req.user.id;
 
-        if (user_id || username || mail || phone) {
-            model.findOneAndDelete({
-                $or: [
-                    { _id: user_id },
-                    { username: username },
-                    { mail: mail },
-                    { phone: phone }
-                ]
-            }).lean().then(response => {
-                if (response) {
-                    return res.status(200).send(`Successfully deleted user.`);    
-                }
-                
-                res.status(404).send(`User not found`);
-            });
-            return;
+        if (user_id) {
+            const success = await userModel.deleteOne({ user_id });
+            
+            if (!success) return res.status(404).send(msg('Couldn\'t delete user.'));
+            res.status(200).send(msg('Successfully deleted user.'));
+
+            // Try to delete user image
+            const img = await pictureModel.findOneAndDelete({user_id: user_id});
+            if (img) {
+                const uri = path.join(__dirname, '..', '..', 'imgs', img.user_id + '.' + img.ext);
+                fs.unlink(uri);
+                console.log(`Deleted image ${img.user_id + '.' + img.ext}`);
+                return;
+            }
+            console.log(`Unable to delete image ${img.user_id + '.' + img.ext} or not found.`);
         }
 
-        res.status(400).send('User data not provided.');
+        res.status(400).send(msg('User data not provided.'));
     }
 };

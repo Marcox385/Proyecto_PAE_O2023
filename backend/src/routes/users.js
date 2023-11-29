@@ -14,6 +14,9 @@ const router = require('express').Router();
 // Controller
 const controller = require('./../controllers/users.controller');
 
+// Profile picture middleware
+const profile_picture = require('./../middlewares/profile_picture');
+
 // Methods
 /**
  * @swagger
@@ -41,34 +44,7 @@ const controller = require('./../controllers/users.controller');
  *     404:
  *       description: User not found
  */
-router.get('/', controller.getUser);
-
-// TODO: Implement
-/**
- * @swagger
- * /api/users/picture:
- *  get:
- *   description: Get user profile picture
- *   tags:
- *     - Users
- *   parameters:
- *     - in: query
- *       name: user_id
- *       type: string
- *     - in: query
- *       name: username
- *       type: string
- *     - in: query
- *       name: mail
- *       type: string
- *     - in: query
- *       name: phone
- *       type: string
- *   responses:
- *     200:
- *       description: Retrieve remotely stored user picture
- */
-router.get('/picture', controller.getUserPicture);
+router.get('/', controller.getUsers);
 
 /**
  * @swagger
@@ -104,6 +80,28 @@ router.post('/register', controller.registerUser);
 
 /**
  * @swagger
+ * /api/users/picture:
+ *  post:
+ *   description: Upload user profile picture
+ *   tags:
+ *     - Users
+ *   parameters:
+ *     - in: body
+ *       name: data
+ *       description: user data
+ *       schema:
+ *         type: object
+ *         properties:
+ *           user_id:
+ *             type: string
+ *   responses:
+ *     200:
+ *       description: User profile picture successfully uploaded
+ */
+router.post('/picture', profile_picture.single('file'), controller.uploadUserPicture);
+
+/**
+ * @swagger
  * /api/users/modify:
  *  put:
  *   description: Update a single user (Doesn't handle same data from same user)
@@ -131,29 +129,6 @@ router.post('/register', controller.registerUser);
  *       description: New username, mail, or phone already in use
  */
 router.put('/modify', controller.modifyUser);
-
-// TODO: Implement
-/**
- * @swagger
- * /api/users/picture:
- *  put:
- *   description: Update user profile picture
- *   tags:
- *     - Users
- *   parameters:
- *     - in: body
- *       name: data
- *       description: user data
- *       schema:
- *         type: object
- *         properties:
- *           user_id:
- *             type: string
- *   responses:
- *     200:
- *       description: User profile picture successfully updated
- */
-router.put('/picture', controller.updateUserPicture);
 
 /**
  * @swagger

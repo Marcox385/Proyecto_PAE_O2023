@@ -13,6 +13,7 @@ const express = require('express');
 const router = express.Router();
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
+const msg = require('./../helpers/msg');
 
 // Swagger configuration file
 const swaggerConfig = require('./../../swagger.config');
@@ -37,12 +38,11 @@ const { authenticateToken } = require('../middlewares/auth');
  *       description: Backend verification route
  */
 router.get('', (req, res) => {
-    res.status(200).send('Backend server is running');
+    res.status(200).send(msg('Backend server is running.'));
 });
 
 router.use('/auth', auth);
-// router.use('/api', authenticateToken, api);
-router.use('/api', api);
+router.use('/api', authenticateToken, api);
 
 // Swagger documentation endpoint
 const swaggerDoc = swaggerJsDoc(swaggerConfig);

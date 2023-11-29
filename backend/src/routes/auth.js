@@ -12,6 +12,7 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
+const msg = require('./../helpers/msg');
 
 // User model as auth utility
 const userModel = require('./../models/user');
@@ -20,7 +21,7 @@ const userModel = require('./../models/user');
 const router = require('express').Router();
 
 // Entity model
-const model = require('./../models/refreshToken');
+const tokenModel = require('./../models/refreshToken');
 
 // Load environment variables
 dotenv.config();
@@ -38,7 +39,7 @@ dotenv.config();
  *       description: Auth working
  */
 router.get('', (req, res) => {
-    res.status(200).send('Auth services path normal');
+    res.status(200).send(msg('Auth services path normal'));
 });
 
 /**
@@ -71,7 +72,7 @@ router.get('', (req, res) => {
  *       description: Unable to login due to internal conflict
  */
 router.post('/login', (req, res) => {
-    // Get these data ideally from login form
+    // Get this data ideally from login form
     const { mail, phone, password } = req.body;
     const user = { mail, phone };
     const reqPassword = password;
@@ -82,11 +83,11 @@ router.post('/login', (req, res) => {
             { phone: phone }
         ]
     }).lean().then(response => {
-        if (response) { // User exists in database
+        if (response) { // User exists in database (no need to check on later routes)
             // Check if password matches in database
             const { _id, username, password } = response;
             bcrypt.compare(reqPassword, password, function(err, data) {
-                if (err) return res.status(503).send('Unable to login');
+                if (err) return res.status(503).send(msg('Unable to login'));
 
                 if (data) {
                     // Generate access and refresh tokens for application accessing
@@ -96,20 +97,20 @@ router.post('/login', (req, res) => {
                     const accessToken = jwt.sign(user, process.env.JWT_SECRET_KEY, { expiresIn: '2h' });
                     const refreshToken = jwt.sign(user, process.env.REFRESH_SECRET_KEY, { expiresIn: '6d' });
 
-                    model.create({token: refreshToken}); // Store refresh token remotely
+                    tokenModel.create({token: refreshToken}); // Store refresh token remotely
 
                     res.status(200).send({accessToken, refreshToken});
                 } else {
-                    res.status(401).send('Incorrect password');
+                    res.status(401).send(msg('Incorrect password'));
                 }
                 return;
             });
         } else { // User not registered
-            res.status(401).send('User not registered.');
+            res.status(401).send(msg('User not registered.'));
         }
         return;
     }).catch(err => {
-        return res.status(503).send('Unable to login');
+        return res.status(503).send(msg('Unable to login', err));
     });
 });
 
@@ -141,10 +142,10 @@ router.post('/token', (req, res) => {
     const refreshToken = req.body.refreshToken;
 
     if (refreshToken) {
-        model.findOne({token: refreshToken}).lean().then(response => {
+        tokenModel.findOne({token: refreshToken}).lean().then(response => {
             if (response) { // Refresh token in database
                 jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY, (err, data) => {
-                    if (err) return res.status(403).send('Invalid token.');
+                    if (err) return res.status(403).send(msg('Invalid token.'));
 
                     const { id, username, mail, phone } = data;
                     const user = {id, username, mail, phone};
@@ -152,13 +153,13 @@ router.post('/token', (req, res) => {
                     res.status(200).send({accessToken});
                 });
             } else {
-                res.status(403).send('Invalid token.');
+                res.status(403).send(msg('Invalid token.'));
             }
         });
         return;
     }
 
-    res.status(401).send('Missing refresh token.');
+    res.status(401).send(msg('Missing refresh token.'));
 });
 
 /**
@@ -189,17 +190,17 @@ router.delete('/logout', (req, res) => {
     const refreshToken = req.body.refreshToken;
 
     if (refreshToken) {
-        model.findOneAndDelete({token: refreshToken}).lean().then(response => {
+        tokenModel.findOneAndDelete({token: refreshToken}).lean().then(response => {
             if (response) {
-                res.status(200).send('Token successfully deleted.');
+                res.status(200).send(msg('Token successfully deleted.'));
             } else {
-                res.status(404).send('Token not found. Proceed with caution.');
+                res.status(404).send(msg('Token not found. Proceed with caution.'));
             }
         });
         return;
     }
 
-    res.status(503).send('Unable to expire token. Proceed with caution.');
+    res.status(503).send(msg('Unable to expire token. Proceed with caution.'));
 });
 
 // Export router
