@@ -24,7 +24,7 @@ const controller = require('./../controllers/posts.controller');
  *     - Posts
  *   parameters:
  *     - in: query
- *       name: id
+ *       name: post_id
  *       type: string
  *   responses:
  *     200:
@@ -82,7 +82,7 @@ router.get('/:user_id', controller.getUserPosts);
  *         type: string
  *       username:
  *         type: string
- *       postData:
+ *       post_data:
  *         type: object
  *   responses:
  *     201:
@@ -112,7 +112,7 @@ router.post('/new', controller.createPost);
  *         properties:
  *           post_id:
  *             type: string
- *           postData:
+ *           post_data:
  *             type: object
  *   responses:
  *     200:

@@ -8,17 +8,17 @@
  *  IS727272 - Marco Ricardo Cordero Hernández 
  */
 
-// Entity model
+// Entity models
 const postModel = require('./../models/post');
 const userModel = require('./../models/user');
 
 module.exports = {
     // GET
     getPost: (req, res) => {
-        post_id = req.query.post_id;
+        const post_id = req.query.post_id;
 
         if (post_id) {
-            postModel.findOne({_id: post_id}).lean().then(response => {
+            postModel.findById(post_id).lean().then(response => {
                 if (response) {
                     const { _id, title, description, labels } = response;
                     res.status(200).send({ _id, title, description, labels });
@@ -58,21 +58,19 @@ module.exports = {
                 ]
             }).lean().then(response => {
                 if (response) { // User found in database
-                    postModel.find({user_id: response._id}).lean().then(response => {
-                        if (response) { 
-                            posts = [];
-        
-                            response.forEach(post => 
-                                posts.push({
-                                    id: post._id,
-                                    title: post.title,
-                                    description: post.description,
-                                    labels: post.labels
-                                })
-                            );
-                            
-                            res.status(200).send(posts);
-                        }
+                    postModel.findById(response._id).lean().then(response => {
+                        posts = [];
+    
+                        response.forEach(post => 
+                            posts.push({
+                                id: post._id,
+                                title: post.title,
+                                description: post.description,
+                                labels: post.labels
+                            })
+                        );
+                        
+                        res.status(200).send(posts);
                     });
                     return;
                 }
@@ -100,17 +98,18 @@ module.exports = {
                 }).lean().then(async response => {
                     if (!response) return res.status(404).send('User not found.');
 
-                    postData = req.body.postData;
-                    if (postData) {
+                    post_data = req.body.post_data;
+                    if (post_data) {
                         // Ignore all other keys
-                        postData = {
+                        post_data = {
                             user_id: response._id,
-                            title: postData.title,
-                            description: postData.description,
-                            labels: postData.labels
+                            title: post_data.title,
+                            description: post_data.description,
+                            labels: post_data.labels,
+                            notifyUser: post_data.notifyUser || false
                         };
 
-                        const result = await postModel.create(postData);
+                        const result = await postModel.create(post_data);
                         return res.status(201).send({post_id: result._id});
                     }
 
@@ -128,15 +127,15 @@ module.exports = {
     // PUT
     editPost: async (req, res) => {
         const post_id = req.body.post_id;
-        const postData = req.body.postData;
+        const post_data = req.body.post_data;
 
         if (post_id) {
-            if (postData) {
+            if (post_data) {
                 // Ignore all other keys
                 newData = {
-                    title: postData.title,
-                    description: postData.description,
-                    labels: postData.labels
+                    title: post_data.title,
+                    description: post_data.description,
+                    labels: post_data.labels
                 };
 
                 // Ignore null fields and return updated document after operation
