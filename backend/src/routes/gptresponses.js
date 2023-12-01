@@ -17,15 +17,12 @@ const controller = require('./../controllers/gptresponses.controller');
 // Methods
 /**
  * @swagger
- * /api/gptresponses:
+ * /api/gptresponses/{post_id}:
  *  get:
- *   description: Get a single post GPT responses
+ *   description: Get a single post GPT response
  *   tags:
  *     - GPT Responses
  *   parameters:
- *     - in: query
- *       name: post_id
- *       type: string
  *     - in: path
  *       name: post_id
  *       schema:
@@ -36,13 +33,13 @@ const controller = require('./../controllers/gptresponses.controller');
  *     400:
  *       description: Post id not provided
  *     404:
- *       description: Post not found
+ *       description: Post not found or not owned by user
  */
-router.get('', controller.getGPTResponses);
+router.get('/:post_id', controller.getGPTResponses);
 
 /**
  * @swagger
- * /api/gptresponses:
+ * /api/gptresponses/new:
  *  post:
  *   description: Register a single GPT response
  *   tags:
@@ -57,8 +54,12 @@ router.get('', controller.getGPTResponses);
  *           post_id:
  *             type: string
  *   responses:
- *     200:
+ *     201:
  *       description: GPT response successfully registered
+ *     400:
+ *       description: Invalid post id
+ *     403:
+ *       description: GPT calls exceeded
  *     404:
  *       description: Post not found
  *     503:

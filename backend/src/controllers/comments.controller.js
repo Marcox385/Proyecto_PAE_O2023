@@ -10,6 +10,7 @@
 
 // Modules
 const dotenv = require('dotenv');
+const msg = require('./../helpers/msg');
 
 // Entity models
 const commentModel = require('./../models/comment');
@@ -42,99 +43,43 @@ module.exports = {
 
         if (comment_id) {
             commentModel.findById(comment_id).lean().then(response => {
-                if (response) {
-                    const { _id, post_id, user_id, title, description, score } = response;
-                    res.status(200).send({ _id, post_id, user_id, title, description, score });
-                } else {
-                    res.status(404).send('Comment not found.');
-                }
+                if (response) return res.status(200).send(response);
+                return res.status(404).send(msg('Comment not found.'));
             });
             return;
         }
 
-        // Return all comments if id not passed
-        commentModel.find({}).lean().then(response => {
-            posts = [];
-
-            response.forEach(item => {
-                const { _id, post_id, user_id, title, description, score } = item;
-                posts.push({ _id, post_id, user_id, title, description, score });
-            });
-
-            res.status(200).send(posts);
-        });
-    },
-
-    getUserComments: (req, res) => {
-        const user_id = req.params.user_id || req.query.user_id;
-        const username = req.query.username;
-        const mail = req.query.mail;
-        const phone = req.query.phone;
-
-        if (user_id || username || mail || phone) {
-            userModel.findOne({
-                $or: [
-                    { _id: user_id },
-                    { username: username },
-                    { mail: mail },
-                    { phone: phone }
-                ]
-            }).lean().then(response => {
-                if (response) { // User found in database
-                    commentModel.findById(response._id).lean().then(response => {
-                        comments = [];
-    
-                        response.forEach(comment => 
-                            comments.push({
-                                id: comment._id,
-                                title: comment.title,
-                                description: comment.description,
-                                labels: comment.labels
-                            })
-                        );
-                        
-                        res.status(200).send(comments);
-                    });
-                    return;
-                }
-
-                return res.status(404).send('User not found.');
-            });
-            return;
-        }
-
-        res.status(400).send('User data not provided.');
+        return res.status(400).send(msg('Comment ID not provided.'));
     },
 
     // POST
     createComment: (req, res) => {
         try {
-            const user_id = req.body.user_id;
+            const user_id = req.user.id;
             const post_id = req.body.post_id;
 
-            if (user_id && post_id) {
-                userModel.findById(user_id).lean().then(res_user => {
-                    if (!res_user) return res.status(404).send('User not found.');
+            if (post_id) {
+                // First search if post to comment exists
+                postModel.findById(post_id).lean().then(async response => {
+                    if (!response) return res.status(404).send('Post not found.');
 
-                    // User exists
-                    postModel.findById(post_id).lean().then(async res_post => {
-                        if (!res_post) return res.status(404).send('Post not found.');
+                    // Post exists
+                    const description = req.body.description;
+                    if (description) {
+                        // Ignore all other keys
+                        comment_data = {
+                            post_id: post_id,
+                            user_id: user_id,
+                            description: description
+                        };
 
-                        const description = req.body.description;
-                        if (description) {
-                            // Ignore all other keys
-                            comment_data = {
-                                post_id: res_post._id,
-                                user_id: res_user._id,
-                                description: description
-                            };
-
-                            const result = await commentModel.create(comment_data);
+                        const result = await commentModel.create(comment_data);
+                        if (result) {
                             res.status(201).send({comment_id: result._id});
 
-                            // Notify user if needed
+                            // Notify user via WhatsApp if needed
                             if (process.env.ENABLE_TWILIO === "true" && res_post.notifyUser === true) {
-                                userModel.findById(res_post.user_id).lean().then(res_notify => {
+                                userModel.findById(user_id).lean().then(res_notify => {
                                     if (!res_notify.phone) {
                                         console.log(`User "${res_notify.username}" has no phone registered`);
                                         return;
@@ -151,72 +96,71 @@ module.exports = {
                                     );
                                 });
                             }
-
                             return;
                         }
+                        return res.status(409).send(msg('Unable to create comment.', 'Database returned no results.'));
+                    }
 
-                        res.status(400).send('Comment description not provided.');
-                    });
+                    res.status(400).send(msg('Comment description not provided.'));
                 });
                 return;
             }
 
-            return res.status(400).send('User or post id not provided.');
+            res.status(400).send(msg('Post id not provided.'));
         } catch (error) {
-            res.status(409).send('Unable to create comment.');
+            res.status(409).send(msg('Unable to create comment.', error));
         }
     },
 
     // PUT
     editComment: async (req, res) => {
+        const user_id = req.user.id;
         const comment_id = req.body.comment_id;
         const description = req.body.description;
 
         if (comment_id) {
             if (description) {
                 // Ignore all other keys
-                newData = {
+                const newData = {
                     description: description
                 };
 
                 // Ignore null fields and return updated document after operation
                 opts = { new: true, omitUndefined: true };
-                doc = await commentModel.findByIdAndUpdate(comment_id, newData, opts);
+                doc = await commentModel.findOneAndUpdate({
+                    _id: comment_id,
+                    user_id: user_id
+                }, newData, opts);
 
-                if (doc) {
-                    res.status(200).send(doc);
-                } else res.status(404).send(`Comment not found.`);
-                return;
+                if (doc) return res.status(200).send(doc);
+                return res.status(404).send(msg('Comment not found or not owned by user.'));
             }
 
-            return res.status(400).send(`Comment data not provided.`);
+            return res.status(400).send(msg('Comment data not provided.'));
         }
 
-        res.status(400).send('Comment ID not provided.');
+        res.status(400).send(msg('Comment ID not provided.'));
     },
 
     // PATCH
     rateComment: async (req, res) => {
-        const user_id = req.body.user_id;
+        const user_id = req.user.id;
         const comment_id = req.body.comment_id;
         const remove = req.body.remove;
         const rate = req.body.rate;
 
-        if (user_id && comment_id) {
-            const user = await userModel.findById(user_id, '_id ratedComments');
-            if (!user) return res.status(404).send('User not found.');
-
+        if (comment_id) {
             const comment = await commentModel.findById(comment_id);
-            if (!comment) return res.status(404).send('Comment not found.');
+            if (!comment) return res.status(404).send(msg('Comment not found.'));
 
             // Comment author tries to perform an auto-rate
-            if (user_id == comment.user_id) return res.status(403).send('Comment author can\'t rate their own comment');
+            if (user_id == comment.user_id) return res.status(403).send(msg('Comment author can\'t rate their own comment.'));
 
             // Check if user is in comment raters
             const rated_comment = comment.ratedBy.find(u => u.user_id == user_id);
             if (rated_comment) { // Comment already rated
                 if (remove && remove === true) { // Remove user rate from comment and update score
-                    update = await commentModel.findByIdAndUpdate(
+                    const update = await commentModel.findByIdAndUpdate(
                         { _id: comment_id },
                         { $inc: { score: -rated_comment.rate } , $pull: { ratedBy: { user_id: user_id } } },
                         { new: true }
@@ -230,7 +174,7 @@ module.exports = {
                 if (rate == rated_comment.rate) return res.status(204).send(); // Same rate
 
                 // User changes rate from positive to negative or vice versa
-                update = await commentModel.findByIdAndUpdate(
+                const update = await commentModel.findByIdAndUpdate(
                     { _id: comment_id },
                     {
                         $inc: { score: (rate > rated_comment.rate) ? 2 : -2 },
@@ -246,7 +190,7 @@ module.exports = {
             if (!rate || typeof rate !== "number" || !(1 - Math.abs(rate) == 0))
                 return res.status(422).send('Incorrect rate format.');
 
-            update = await commentModel.findByIdAndUpdate(
+            const update = await commentModel.findByIdAndUpdate(
                 { _id: comment_id },
                 { 
                     $inc: { score: rate },
@@ -258,24 +202,22 @@ module.exports = {
             return res.status(200).send(update); // Comment rated successfully
         }
 
-        res.status(400).send('User or comment id not provided');
+        res.status(400).send(msg('Comment id not provided.'));
     },
 
     // DELETE
     deleteComment: (req, res) => {
+        const user_id = req.user.id;
         const comment_id = req.body.comment_id;
 
         if (comment_id) {
-            commentModel.findByIdAndDelete(comment_id).lean().then(response => {
-                if (response) {
-                    return res.status(200).send(`Successfully deleted comment.`);    
-                }
-                
-                res.status(404).send(`Comment not found`);
+            commentModel.findOneAndDelete({ _id: comment_id, user_id: user_id }).lean().then(response => {
+                if (response) return res.status(200).send(msg('Successfully deleted comment.'));
+                return res.status(404).send(msg('Comment not found or not owned by user.'));
             });
             return;
         }
 
-        res.status(400).send('Comment ID not provided.');
+        res.status(400).send(msg('Comment ID not provided.'));
     }
 };

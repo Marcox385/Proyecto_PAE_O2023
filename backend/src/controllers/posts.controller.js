@@ -8,34 +8,58 @@
  *  IS727272 - Marco Ricardo Cordero Hernández 
  */
 
+// Modules
+const msg = require('./../helpers/msg');
+
 // Entity models
-const postModel = require('./../models/post');
-const userModel = require('./../models/user');
+const model = require('./../models/post');
 
 module.exports = {
     // GET
-    getPost: (req, res) => {
+    getPosts: (req, res) => {
         const post_id = req.query.post_id;
+        const title = req.query.title;
+        const tags = req.query.tag;
 
-        if (post_id) {
-            postModel.findById(post_id).lean().then(response => {
-                if (response) {
-                    const { _id, title, description, labels } = response;
-                    res.status(200).send({ _id, title, description, labels });
-                } else {
-                    res.status(404).send('Post not found.');
+        if (post_id || title || tags) {
+            if (post_id) {
+                model.findById(post_id).lean().then(response => {
+                    if (response) return res.status(200).send(response);
+                    res.status(404).send(msg('Post not found.'));
+                });
+                return;
+            }
+
+            const new_tags = (tags) ? ((Array.isArray(tags)) ? tags.join(' ') : tags) : '';
+            const query = ((title) ? title: '') + ' ' + new_tags;
+            
+            model.aggregate([
+                {
+                    $search: {
+                        index: "text_search",
+                        text: {
+                            query: query,
+                            path: {
+                                wildcard: "*"
+                            }
+                        }
+                    }
                 }
+            ]).then(response => {
+                posts = []
+                response.forEach(post => posts.push(post));
+                return res.status(200).send(posts);
             });
             return;
         }
 
         // Return all posts if id not passed
-        postModel.find({}).lean().then(response => {
+        model.find({}).lean().then(response => {
             posts = [];
 
             response.forEach(item => {
-                const { _id, title, description, labels } = item;
-                posts.push({_id, title, description, labels});
+                const { _id, title, description, tags } = item;
+                posts.push({_id, title, description, tags});
             });
 
             res.status(200).send(posts);
@@ -43,89 +67,50 @@ module.exports = {
     },
 
     getUserPosts: (req, res) => {
-        const user_id = req.params.user_id || req.query.user_id;
-        const username = req.query.username;
-        const mail = req.query.mail;
-        const phone = req.query.phone;
+        const user_id = req.params.user_id || req.query.user_id || req.user.id;
 
-        if (user_id || username || mail || phone) {
-            userModel.findOne({
-                $or: [
-                    { _id: user_id },
-                    { username: username },
-                    { mail: mail },
-                    { phone: phone }
-                ]
-            }).lean().then(response => {
-                if (response) { // User found in database
-                    postModel.findById(response._id).lean().then(response => {
-                        posts = [];
-    
-                        response.forEach(post => 
-                            posts.push({
-                                id: post._id,
-                                title: post.title,
-                                description: post.description,
-                                labels: post.labels
-                            })
-                        );
-                        
-                        res.status(200).send(posts);
-                    });
-                    return;
-                }
+        model.find({ user_id: user_id }).lean().then(response => {
+            if (response) {
+                posts = []
+                response.forEach(post => posts.push(post));
+                return res.status(200).send(posts);
+            }
 
-                return res.status(404).send('User not found.');
-            });
-            return;
-        }
-
-        res.status(400).send('User data not provided.');
+            return res.status(404).send('User not found.');
+        });
     },
 
     // POST
-    createPost: (req, res) => {
+    createPost: async (req, res) => {
         try {
-            const user_id = req.body.user_id;
-            const username = req.body.username;
+            const user_id = req.user.id;
+            const post_data = req.body;
 
-            if (user_id || username) {
-                userModel.findOne({
-                    $or: [
-                        { _id: user_id },
-                        { username: username },
-                    ]
-                }).lean().then(async response => {
-                    if (!response) return res.status(404).send('User not found.');
+            if (post_data) {
+                // Ignore all other keys
+                contents = {
+                    user_id: user_id,
+                    title: post_data.title,
+                    description: post_data.description,
+                    tags: post_data.tags.slice(0, 5),
+                    notifyUser: post_data.notifyUser || false
+                };
 
-                    post_data = req.body.post_data;
-                    if (post_data) {
-                        // Ignore all other keys
-                        post_data = {
-                            user_id: response._id,
-                            title: post_data.title,
-                            description: post_data.description,
-                            labels: post_data.labels,
-                            notifyUser: post_data.notifyUser || false
-                        };
+                const result = await model.create(contents);
 
-                        const result = await postModel.create(post_data);
-                        return res.status(201).send(result);
-                    }
-
-                    res.status(400).send('Post data not provided.');
-                });
-                return;
+                if (result) return res.status(201).send(result);
+                return res.status(409).send(msg('Unable to create post.', 'Database returned no results.'));
             }
 
-            return res.status(400).send('Username not provided.');
+            res.status(400).send(msg('Post data not provided.'));
         } catch (error) {
-            res.status(409).send('Unable to create post.');
+            res.status(409).send(msg('Unable to create post.', error));
         }
     },
 
     // PUT
     editPost: async (req, res) => {
+        const user_id = req.user.id;
         const post_id = req.body.post_id;
         const post_data = req.body.post_data;
 
@@ -135,40 +120,41 @@ module.exports = {
                 newData = {
                     title: post_data.title,
                     description: post_data.description,
-                    labels: post_data.labels
+                    tags: post_data.tags
                 };
 
                 // Ignore null fields and return updated document after operation
                 opts = { new: true, omitUndefined: true };
-                doc = await postModel.findByIdAndUpdate(post_id, newData, opts);
+                doc = await model.findOneAndUpdate({ _id: post_id, user_id: user_id }, newData, opts);
 
                 if (doc) {
                     res.status(200).send(doc);
-                } else res.status(404).send(`Post not found.`);
+                } else res.status(404).send(msg('Post not found or not owned by user.'));
                 return;
             }
 
-            return res.status(400).send(`Post data not provided.`);
+            return res.status(400).send(msg('Post data not provided.'));
         }
 
-        res.status(400).send('Post ID not provided.');
+        res.status(400).send(msg('Post ID not provided.'));
     },
 
     // DELETE
     deletePost: (req, res) => {
+        const user_id = req.user.id;
         const post_id = req.body.post_id;
 
         if (post_id) {
-            postModel.findByIdAndDelete(post_id).lean().then(response => {
+            model.findOneAndDelete({ _id: post_id, user_id: user_id }).lean().then(response => {
                 if (response) {
-                    return res.status(200).send(`Successfully deleted post.`);    
+                    return res.status(200).send('Successfully deleted post.');    
                 }
                 
-                res.status(404).send(`Post not found`);
+                res.status(404).send('Post not found or not owned by user.');
             });
             return;
         }
 
-        res.status(400).send('Post ID not provided.');
+        res.status(400).send(msg('Post ID not provided.'));
     }
 };

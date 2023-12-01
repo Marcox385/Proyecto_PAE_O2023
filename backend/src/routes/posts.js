@@ -19,26 +19,35 @@ const controller = require('./../controllers/posts.controller');
  * @swagger
  * /api/posts:
  *  get:
- *   description: Get posts
+ *   description: Search posts or get all
  *   tags:
  *     - Posts
  *   parameters:
  *     - in: query
  *       name: post_id
  *       type: string
+ *       required: false
+ *     - in: query
+ *       name: title
+ *       type: string
+ *       require: false
+ *     - in: query
+ *       name: tag
+ *       type: [string, array]
+ *       require: false
  *   responses:
  *     200:
  *       description: Return specified post data or all posts
  *     404:
  *       description: Post not found
  */
-router.get('', controller.getPost);
+router.get('', controller.getPosts);
 
 /**
  * @swagger
- * /api/posts/{user_id}:
+ * /api/posts/user/{user_id}:
  *  get:
- *   description: Get user's posts
+ *   description: Get all user posts
  *   tags:
  *     - Users
  *   parameters:
@@ -46,27 +55,15 @@ router.get('', controller.getPost);
  *       name: user_id
  *       schema:
  *         type: string
- *     - in: query
- *       name: user_id
- *       type: string
- *     - in: query
- *       name: username
- *       type: string
- *     - in: query
- *       name: mail
- *       type: string
- *     - in: query
- *       name: phone
- *       type: string
+ *       required: false
  *   responses:
  *     200:
- *       description: Get user's posts list
- *     400:
- *       description: User data not provided
+ *       description: Get user post list
  *     404:
  *       description: User not found
  */
-router.get('/:user_id', controller.getUserPosts);
+router.get('/user', controller.getUserPosts);
+router.get('/user/:user_id', controller.getUserPosts);
 
 /**
  * @swagger
@@ -86,11 +83,9 @@ router.get('/:user_id', controller.getUserPosts);
  *         type: object
  *   responses:
  *     201:
- *       description: Post successfully created, id returned
+ *       description: Post successfully created
  *     400:
- *       description: Username or post data not provided
- *     404:
- *       description: User to bind post not found
+ *       description: Post data not provided
  *     409:
  *       description: Unable to create post
  */
@@ -120,7 +115,7 @@ router.post('/new', controller.createPost);
  *     400:
  *       description: Post ID or data not provided
  *     404:
- *       description: Post not found
+ *       description: Post not found or not owned by user
  */
 router.put('/edit', controller.editPost);
 
@@ -142,7 +137,7 @@ router.put('/edit', controller.editPost);
  *     400:
  *       description: Post ID not provided
  *     404:
- *       description: Post not found
+ *       description: Post not found or not owned by user
  */
 router.delete('/delete', controller.deletePost);
 

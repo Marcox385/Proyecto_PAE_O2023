@@ -14,7 +14,7 @@ const postSchema = new Schema({
     user_id: { type: String, required: true },
     title: { type: String, required: true, maxLength: 150 },
     description: { type: String, required: true, maxLength: 30000 },
-    labels: { type: Array, default: [], validate: [LabelsLimit, 'Maximum labels exceeded']},
+    tags: { type: Array, default: [], validate: [TagsLimit, 'Maximum tags exceeded']},
     GPTResponses: { type: Array, default: [], validate: [GPTResponsesLimit, 'AI responses exceeded'] },
     notifyUser: { type: Boolean, default: false }
 }, { timestamps: true });
@@ -24,7 +24,7 @@ function GPTResponsesLimit(arr) {
     return arr.length <= 4;
 }
 
-function LabelsLimit(arr) {
+function TagsLimit(arr) {
     return arr.length <= 5;
 }
 

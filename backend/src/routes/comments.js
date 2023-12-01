@@ -28,41 +28,13 @@ const controller = require('./../controllers/comments.controller');
  *       type: string
  *   responses:
  *     200:
- *       description: Return specified comment data or all comments
+ *       description: Return specified comment data
+ *     400:
+ *       description: Comment ID not provided
  *     404:
  *       description: Comment not found
  */
 router.get('', controller.getComment);
-
-/**
- * @swagger
- * /api/comments/{user_id}:
- *  get:
- *   description: Get user's comments
- *   tags:
- *     - Comments
- *   parameters:
- *     - in: query
- *       name: user_id
- *       type: string
- *     - in: query
- *       name: username
- *       type: string
- *     - in: query
- *       name: mail
- *       type: string
- *     - in: query
- *       name: phone
- *       type: string
- *   responses:
- *     200:
- *       description: Get user's comments list
- *     400:
- *       description: User data not provided
- *     404:
- *       description: User not found
- */
-router.get('/:user_id', controller.getUserComments);
 
 /**
  * @swagger
@@ -78,21 +50,19 @@ router.get('/:user_id', controller.getUserComments);
  *       schema:
  *         type: object
  *         properties:
- *           user_id:
- *             type: string
  *           post_id:
  *             type: string
  *           description:
  *             type: string
  *   responses:
- *     200:
- *       description: Post successfully created
+ *     201:
+ *       description: Comment successfully created
  *     400:
- *       description: Required data not found (user or comment)
+ *       description: Post id or comment description not provided
  *     404:
- *       description: Comment author user or post not found
+ *       description: Post not found
  *     409:
- *       description: Can't create comment
+ *       description: Unable to create comment
  */
 router.post('/new', controller.createComment);
 
@@ -120,13 +90,13 @@ router.post('/new', controller.createComment);
  *     400:
  *       description: Comment id or data not provided
  *     404:
- *       description: Comment not found
+ *       description: Comment not found or not owned by user
  */
 router.put('/edit', controller.editComment);
 
 /**
  * @swagger
-* /api/comments/rate:
+ * /api/comments/rate:
  *  patch:
  *   description: Rate a comment
  *   tags:
@@ -138,8 +108,6 @@ router.put('/edit', controller.editComment);
  *       schema:
  *         type: object
  *         properties:
- *           user_id:
- *             type: string
  *           comment_id:
  *             type: string
  *           rate:
@@ -149,15 +117,15 @@ router.put('/edit', controller.editComment);
  *             optional: true
  *   responses:
  *     200:
- *       description: New comment rating
+ *       description: Comment rated
  *     204:
- *       description: Rate removed, updated, created or ignored
+ *       description: Same comment rate
  *     400:
- *       description: User or comment id not provided
+ *       description: Comment id not provided
  *     403:
  *       description: User tries to rate their own comment
  *     404:
- *       description: User or comment not found
+ *       description: Comment not found
  *     422:
  *       description: Incorrect rate format
  */
@@ -181,7 +149,7 @@ router.patch('/rate', controller.rateComment);
  *     400:
  *       description: Comment ID not provided
  *     404:
- *       description: Comment not found
+ *       description: Comment not found or not owned by user
  */
 router.delete('/delete', controller.deleteComment);
 

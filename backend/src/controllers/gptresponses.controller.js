@@ -11,63 +11,80 @@
 // Modules
 const dotenv = require('dotenv');
 const { OpenAI } = require('openai');
+const msg = require('./../helpers/msg');
 
 // Entity models
 const GPTModel = require('./../models/gptresponse');
 const postModel = require('./../models/post');
 
-// Load OpenAI Key
-dotenv.config();
+// OpenAI service
+dotenv.config(); // Load OpenAI Key
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+});
 
 module.exports = {
     // GET
     getGPTResponses: async (req, res) => {
-        const post_id = req.params.post_id || req.query.post_id;
+        const user_id = req.user.id;
+        const post_id = req.params.post_id;
 
         if (post_id) {
-            const post = await postModel.findById(post_id);
-            if (!post) return res.status(404).send('Post not found.');
+            const post = await postModel.find({ _id: post_id, user_id: user_id });
+            if (!post) return res.status(404).send(msg('Post not found or not owned by user.'));
 
             const responses = [];
-            const gptresponse = (await GPTModel.find({ post_id: post_id })).forEach(
+            (await GPTModel.find({ post_id: post_id })).forEach(
                 response => responses.push(response.contents)
             );
             return res.status(200).send(responses);
         }
 
-        return res.status(400).send('Post id not provided.');
+        return res.status(400).send(msg('Post id not provided.'));
     },
 
     // POST
-    GPTCall: async (req, res) => {
+    GPTCall: (req, res) => {
+        const user_id = req.user.id;
         const post_id = req.body.post_id;
 
-        if (!post_id) return res.status(400).send('Post id not provided.');
+        if (!post_id) return res.status(400).send(msg('Post id not provided.'));
 
-        const { description } = await postModel.findById(post_id, 'description');
+        postModel.findOne({ _id: post_id, user_id: user_id }).lean().then(async response => {
+            if (!response) return res.status(404).send('Post not found or not owned by user.');
 
-        try {
-            const openai = new OpenAI({
-                apiKey: process.env.OPENAI_API_KEY
-            });
+            if (response.GPTResponses.length >= 4)
+                return res.status(403).send(msg('GPT answers limit exceeded.'));
 
-            const response = await openai.chat.completions.create({
-                messages: [
-                    { role: 'system', content: process.env.OPENAI_API_BEHAVIOR },
-                    { role: 'user', content: description + process.env.MODIFIER }
-                ],
-                model: process.env.MODEL,
-            });
-            
-            content = {
-                post_id,
-                contents: response.choices[0].message.content
-            };
+            try {
+                const gptResponse = await openai.chat.completions.create({
+                    messages: [
+                        { role: 'system', content: process.env.OPENAI_API_BEHAVIOR },
+                        { role: 'user', content: response.description + process.env.MODIFIER }
+                    ],
+                    model: process.env.MODEL
+                });
+                
+                const content = {
+                    post_id: post_id,
+                    contents: gptResponse.choices[0].message.content
+                };
+    
+                // Create new response
+                const entry = await GPTModel.create(content);
 
-            const entry = await GPTModel.create(content);
-            return res.status(200).send(entry);
-        } catch {
-            res.status(503).send('OpenAI service unavailable.')
-        }
+                // Bind response to post
+                const insertOnPost = await postModel.findByIdAndUpdate(
+                    post_id,
+                    { 
+                        $push: { GPTResponses: entry._id }
+                    }
+                );
+
+                return res.status(201).send(entry);
+            } catch (error) {
+                res.status(503).send(msg('OpenAI service unavailable.', error))
+            }
+        }).catch(e => res.status(400).send(msg('Invalid post ID.', e)));
     }
 };
