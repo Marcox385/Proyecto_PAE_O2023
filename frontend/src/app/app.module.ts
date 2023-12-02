@@ -17,7 +17,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
-
+import { PublicationComponent } from './pages/publication/publication.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { PuplishedCommentsComponent } from './pages/publication/puplished-comments/puplished-comments.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +30,8 @@ import { MatListModule } from '@angular/material/list';
     HomeComponent,
     LoginComponent,
     SidebarComponent,
+    PublicationComponent,
+    PuplishedCommentsComponent,
   ],
   imports: [
     BrowserModule,
@@ -37,7 +42,9 @@ import { MatListModule } from '@angular/material/list';
     GoogleSigninButtonModule,
     HttpClientModule,
     MatSidenavModule,
-    MatListModule
+    MatListModule,
+    MatButtonModule,
+    MatIconModule
   ],
   providers: [
     {
