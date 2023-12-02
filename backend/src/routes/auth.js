@@ -9,9 +9,10 @@
  */
 
 // Modules
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
+const { getSocketInstance } = require('./../helpers/socket');
 const msg = require('./../helpers/msg');
 
 // User model as auth utility
@@ -100,6 +101,10 @@ router.post('/login', (req, res) => {
                     tokenModel.create({token: refreshToken}); // Store refresh token remotely
 
                     res.status(200).send({accessToken, refreshToken});
+
+                    // Join user notification socket room
+                    const io = getSocketInstance();
+                    io.to(_id).emit('joinRoom', _id);
                 } else {
                     res.status(401).send(msg('Incorrect password'));
                 }

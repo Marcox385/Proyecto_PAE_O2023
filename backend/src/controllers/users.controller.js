@@ -128,7 +128,7 @@ module.exports = {
                 fs.unlinkSync(uri);
             }
 
-            res.status(201).send(msg('Image uploaded succesfully.'));
+            res.status(201).send(msg('Image uploaded successfully.'));
         }).catch(err => {
             const uri = path.join(__dirname, '..', '..', 'imgs', req.file.filename);
             fs.unlinkSync(uri); // Delete local image file

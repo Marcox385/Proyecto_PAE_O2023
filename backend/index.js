@@ -15,6 +15,7 @@ const dotenvExpand = require('dotenv-expand');
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const { initializeSocket } = require('./src/helpers/socket');
 
 // Local files
 const router = require('./src/routes');
@@ -40,9 +41,13 @@ app.use(router);
 mongoose.connect(process.env.DB_URL, { useUnifiedTopology: true }).then(() => {
     console.log(`Connected to MongoDB on ${process.env.TARGET_DB} database`);
 
-    app.listen(port, () => {
+    // Server (assigned to const for socket usage)
+    const server = app.listen(port, () => {
         console.log(`App running on port ${port}`);
     });
+
+    // Socket initialization
+    initializeSocket(server);
 }).catch(err => {
     console.log("Failed to connect to MongoDB: ", err);
 });

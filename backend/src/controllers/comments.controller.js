@@ -11,6 +11,7 @@
 // Modules
 const dotenv = require('dotenv');
 const msg = require('./../helpers/msg');
+const { getSocketInstance } = require('./../helpers/socket');
 
 // Entity models
 const commentModel = require('./../models/comment');
@@ -77,7 +78,18 @@ module.exports = {
                         if (result) {
                             res.status(201).send({comment_id: result._id});
 
-                            // Notify user via WhatsApp if needed
+                            // Notify through socket room to original post author
+                            const io = getSocketInstance();
+                            io.to(response.user_id).emit(
+                                'commentNotification',
+                                {
+                                    post: response.title,
+                                    commentUser: req.user.username,
+                                    contents: description
+                                }
+                            );
+
+                            // Notify original post author via WhatsApp if needed
                             if (process.env.ENABLE_TWILIO === "true" && res_post.notifyUser === true) {
                                 userModel.findById(user_id).lean().then(res_notify => {
                                     if (!res_notify.phone) {
