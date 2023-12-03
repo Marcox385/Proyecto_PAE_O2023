@@ -186,12 +186,12 @@ module.exports = {
 
                     if (doc) {
                         res.status(200).send(doc);
-                    } else res.status(404).send(msg(`User not found.`));
+                    } else res.status(404).send(msg('User not found.'));
                 });
                 return;
             }
 
-            return res.status(400).send('New data not provided.');
+            return res.status(400).send(msg('New data not provided.'));
         }
 
         res.status(400).send(msg('User id not provided.'));

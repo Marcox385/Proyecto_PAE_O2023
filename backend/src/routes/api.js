@@ -8,6 +8,9 @@
  *  IS727272 - Marco Ricardo Cordero Hernández 
  */
 
+// Modules
+const msg = require('./../helpers/msg');
+
 // Express router
 const router = require('express').Router();
 
@@ -30,7 +33,7 @@ const gptresponses = require('./gptresponses');
  *       description: API Entry verification path
  */
 router.get('', (req, res) => {
-    res.status(200).send('API path normal');
+    res.status(200).send(msg('API path normal'));
 });
 
 router.use('/users', users);

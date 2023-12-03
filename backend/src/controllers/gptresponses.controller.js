@@ -51,7 +51,7 @@ module.exports = {
         if (!post_id) return res.status(400).send(msg('Post id not provided.'));
 
         postModel.findOne({ _id: post_id, user_id: user_id }).lean().then(async response => {
-            if (!response) return res.status(404).send('Post not found or not owned by user.');
+            if (!response) return res.status(404).send(msg('Post not found or not owned by user.'));
 
             if (response.GPTResponses.length >= 4)
                 return res.status(403).send(msg('GPT answers limit exceeded.'));

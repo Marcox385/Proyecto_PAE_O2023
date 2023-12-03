@@ -76,7 +76,7 @@ module.exports = {
                 return res.status(200).send(posts);
             }
 
-            return res.status(404).send('User not found.');
+            return res.status(404).send(msg('User not found.'));
         });
     },
 
@@ -147,10 +147,10 @@ module.exports = {
         if (post_id) {
             model.findOneAndDelete({ _id: post_id, user_id: user_id }).lean().then(response => {
                 if (response) {
-                    return res.status(200).send('Successfully deleted post.');    
+                    return res.status(200).send(msg('Successfully deleted post.'));
                 }
                 
-                res.status(404).send('Post not found or not owned by user.');
+                res.status(404).send(msg('Post not found or not owned by user.'));
             });
             return;
         }

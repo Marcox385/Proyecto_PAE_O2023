@@ -62,7 +62,7 @@ module.exports = {
             if (post_id) {
                 // First search if post to comment exists
                 postModel.findById(post_id).lean().then(async response => {
-                    if (!response) return res.status(404).send('Post not found.');
+                    if (!response) return res.status(404).send(msg('Post not found.'));
 
                     // Post exists
                     const description = req.body.description;
@@ -181,7 +181,7 @@ module.exports = {
                 }
 
                 if (!rate || typeof rate !== "number" || !(1 - Math.abs(rate) == 0))
-                    return res.status(422).send('Incorrect rate format.');
+                    return res.status(422).send(msg('Incorrect rate format.'));
 
                 if (rate == rated_comment.rate) return res.status(204).send(); // Same rate
 
@@ -200,7 +200,7 @@ module.exports = {
             
             // Comment not rated yet
             if (!rate || typeof rate !== "number" || !(1 - Math.abs(rate) == 0))
-                return res.status(422).send('Incorrect rate format.');
+                return res.status(422).send(msg('Incorrect rate format.'));
 
             const update = await commentModel.findByIdAndUpdate(
                 { _id: comment_id },
