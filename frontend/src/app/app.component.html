@@ -1,6 +1,6 @@
 <bgc-header></bgc-header>
 
-<bgc-sidebar></bgc-sidebar>
+<bgc-sidebar *ngIf="!hasRoute('login') && !hasRoute('signup')"></bgc-sidebar>
 <main>
     <router-outlet></router-outlet>
 </main>

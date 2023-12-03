@@ -1,100 +1,36 @@
-<article>
-  <div class="container" id="container">
-    <div class="form-container register-container">
-      <form>
-        <h1>Registrate aquí</h1>
-        <div class="form-control">
-          <input type="text" id="username" placeholder="Nombre" required>
-          <small id="username-error"></small>
-          <span></span>
-        </div>
-        <div class="form-control">
-          <input type="email" id="email" placeholder="Email" required>
-          <small id="email-error"></small>
-          <span></span>
-        </div>
-        <div class="form-control">
-          <input type="password" id="password" placeholder="Contraseña" required>
-          <small id="password-error"></small>
-          <span></span>
-        </div>
-        <div class="form-control">
-          <input type="password" id="password" placeholder="Teléfono" required>
-          <small id="password-error"></small>
-          <span></span>
-        </div>
-        <button type="submit" value="submit">Registrarse</button>
-        <span>o... usa tu cuenta</span>
-        <div class="social-container">
-          <a href="#" class="social"><i class="fa-brands fa-facebook-f"></i></a>
-          <a href="#" class="social"><i class="fa-brands fa-google"></i></a>
-          <a href="#" class="social"><i class="fa-brands fa-linkedin"></i></a>
-        </div>
-      </form>
-    </div>
+<content>
+  <form [formGroup]="loginForm">
+    <h1>Login</h1>
 
-    <div class="form-container login-container">
-      <form class="form-lg">
-        <h1>Accede aquí</h1>
-        <div class="form-control2">
-          <input type="email" class="email-2" placeholder="Email" required>
-          <small class="email-error-2"></small>
-          <span></span>
-        </div>
-        <div class="form-control2">
-          <input type="password" class="password-2" placeholder="Contraseña" required>
-          <small class="password-error-2"></small>
-          <span></span>
-        </div>
+    <mat-form-field>
+        <mat-label>Correo</mat-label>
+        <input matInput type="email" name="mail" formControlName="mail">
+        <mat-icon matSuffix>mail</mat-icon>
+        <mat-error *ngIf="hasError('mail', 'required')">El campo es requerido</mat-error>
+    </mat-form-field>
 
-        <div class="content">
-          <div class="checkbox">
-            <input type="checkbox" name="checkbox" id="checkbox" />
-            <label for="">Recuerdame</label>
-          </div>
-          <div class="pass-link">
-            <a href="#">Olvidé mi contraseña</a>
-          </div>
-        </div>
-        <button type="submit" value="submit">Login</button>
-        <span>o... registrate</span>
-        <div class="social-container">
-          <a href="#" class="social"><i class="fa-brands fa-facebook-f"></i></a>
-          <!-- <a href="#" class="social"><i class="fa-brands fa-google"></i></a> -->
-          <asl-google-signin-button GoogleSigninButtonDirective type='icon' size='medium'></asl-google-signin-button>
-          <a href="#" class="social"><i class="fa-brands fa-linkedin"></i></a>
-        </div>
-      </form>
-    </div>
+    <mat-form-field>
+        <mat-label>Teléfono</mat-label>
+        <input matInput type="tel" name="phone" formControlName="phone">
+        <mat-icon matSuffix>phone</mat-icon>
+        <mat-error *ngIf="hasError('phone', 'required')">El campo es requerido</mat-error>
+    </mat-form-field>
 
-    <div class="overlay-container">
-      <div class="overlay">
-        <div class="overlay-panel overlay-left">
-          <h1 class="title">
-            Hola <br />
-            amigos
-          </h1>
-          <p>Si tienes una cuenta, accede desde aquí</p>
-          <button class="ghost" id="login">
-            Login
-            <i class="fa-solid fa-arrow-left"></i>
-          </button>
-        </div>
+    <mat-form-field>
+        <mat-label>Contraseña</mat-label>
+        <input matInput type="password" name="password" formControlName="password">
+        <mat-icon matSuffix>password</mat-icon>
+        <mat-error *ngIf="hasError('password', 'required')">El campo es requerido</mat-error>
+    </mat-form-field>
 
-        <div class="overlay-panel overlay-right">
-          <h1 class="title">
-            Empieza a <br />
-            aprender ahora
-          </h1>
-          <p>
-            Si no tienes una cuenta, registrate y empiza a aprender
-          </p>
-          <button class="ghost" id="register">
-            Registrarse
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </div>
+    <div id="controls">
+      <div id="google">
+        <asl-google-signin-button GoogleSigninButtonDirective type='standard' size='medium'></asl-google-signin-button>
       </div>
+      <button mat-flat-button color="primary" [disabled]="loginForm.invalid" (click)="login('', '')">Ingresa</button>
     </div>
-  </div>
-</article>
+    <hr>
+  
+    <p>¿Aún no tienes cuenta? <a routerLink="/signup">Regístrate aquí</a></p>
+  </form>
+</content>
