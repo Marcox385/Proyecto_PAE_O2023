@@ -1,6 +1,10 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'bgc-signup',
@@ -10,10 +14,13 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class SignupComponent {
 
   signupForm: FormGroup;
+  disallowUse: boolean = false;
 
   constructor(
-    formBuilder: FormBuilder
-  ) {
+    formBuilder: FormBuilder,
+    private router: Router,
+    private userService: UserService,
+    private _snackBar: MatSnackBar) {
     this.signupForm = formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(5)]],
       mail: ['', [Validators.email]],
@@ -45,6 +52,34 @@ export class SignupComponent {
 
   hasError(controlName: string, errorName: string) {
     return this.signupForm.controls[controlName].errors && this.signupForm.controls[controlName].errors![errorName];
+  }
+
+  openSnackBar(message: string) {
+    this._snackBar.open(message, 'OK');
+  }
+
+  signup() {
+    this.disallowUse = true;
+    const { username, mail, phone, password } = this.signupForm.getRawValue();
+    this.userService.register(username, mail, phone, password).subscribe(
+      (response) => {
+        console.log(response);
+        this.openSnackBar('Usuario registrado exitósamente.');
+
+        setTimeout(() => {
+          this.router.navigate(['login']);
+        }, 2333);
+      },
+      (err: Error) => {
+        console.log(err);
+        if (err instanceof HttpErrorResponse) {
+          if (err.status === 409) {
+            this.openSnackBar('El usuario ya existe.');
+          }
+          this.disallowUse = false;
+        }
+      }
+    );
   }
 
 }

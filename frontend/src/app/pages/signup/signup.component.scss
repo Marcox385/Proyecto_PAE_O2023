@@ -30,7 +30,7 @@ form {
   }
 
   hr {
-    margin: 40px 0;
+    margin: 20px 0 40px 0;
     border-color: lightgray;
 
     + p {
@@ -41,6 +41,13 @@ form {
   #controls {
     margin-top: 20px;
     text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    mat-spinner {
+      scale: 0.4;
+    }
   }
 }
 

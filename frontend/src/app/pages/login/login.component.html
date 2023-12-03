@@ -9,6 +9,8 @@
         <mat-error *ngIf="hasError('mail', 'required')">El campo es requerido</mat-error>
     </mat-form-field>
 
+    <h4>O</h4>
+
     <mat-form-field>
         <mat-label>Teléfono</mat-label>
         <input matInput type="tel" name="phone" formControlName="phone">
@@ -27,7 +29,7 @@
       <div id="google">
         <asl-google-signin-button GoogleSigninButtonDirective type='standard' size='medium'></asl-google-signin-button>
       </div>
-      <button mat-flat-button color="primary" [disabled]="loginForm.invalid" (click)="login('', '')">Ingresa</button>
+      <button mat-flat-button color="primary" [disabled]="loginForm.invalid || disallowUse" (click)="login()">Ingresa</button>
     </div>
     <hr>
   

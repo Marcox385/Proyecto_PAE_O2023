@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { SocialAuthService, SocialUser } from "@abacritt/angularx-social-login";
-import { AuthResponse } from 'src/interfaces/authresponse';
+import { AuthResponse } from './shared/interfaces/authresponse';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject } from 'rxjs';
-import { User } from 'src/interfaces/user';
-import { Token } from 'src/interfaces/token';
-import { AuthService } from './services/auth.service';
+import { User } from './shared/interfaces/user';
+import { Token } from './shared/interfaces/token';
+import { AuthService } from './shared/services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -16,19 +16,21 @@ import { Router } from '@angular/router';
 export class AppComponent {
   title = 'frontend';
 
-  user: User = { name: '', email: '' };
+  user: User = { username: '' };
 
   loginStatus = true;
 
   constructor(private auth: AuthService, private authService: SocialAuthService, private router: Router) {
-    authService.authState.subscribe((user: User) => {
+    authService.authState.subscribe((user: SocialUser) => {
       console.log('User: ', user);
       this.loginStatus = true;
-      this.user = user;
+      this.user = {
+        username: user.name
+      };
     });
 
     const currentUser = auth.currentUserValue;
-      this.user = currentUser !== null ? currentUser : { name: '', email: '' };
+    this.user = currentUser !== null ? currentUser : { username: '' };
   }
 
 

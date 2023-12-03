@@ -5,9 +5,9 @@ import { SocialAuthService, SocialUser } from "@abacritt/angularx-social-login";
 import { Router } from '@angular/router'; 
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Token } from 'src/interfaces/token';
-import { AuthResponse } from 'src/interfaces/authresponse';
-import { User } from 'src/interfaces/user';
+import { Token } from 'src/app/shared/interfaces/token';
+import { AuthResponse } from 'src/app/shared/interfaces/authresponse';
+import { User } from 'src/app/shared/interfaces/user';
 
 @Injectable({
   providedIn: 'root'
