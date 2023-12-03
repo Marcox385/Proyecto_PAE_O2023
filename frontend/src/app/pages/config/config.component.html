@@ -1,0 +1,37 @@
+<bgc-sidebar></bgc-sidebar>
+<div class="config-container">
+    <h1>Configuración</h1>
+
+    <!-- Estilos del Sitio -->
+    <div class="config-section">
+        <h2>Estilos del Sitio</h2>
+        <div class="config-item">
+            <label for="backgroundColor">Color de Fondo:</label>
+            <input type="color" id="backgroundColor" name="backgroundColor">
+        </div>
+        <div class="config-item">
+            <label for="fontFamily">Fuente:</label>
+            <select id="fontFamily" name="fontFamily">
+                <option value="Poppins, sans-serif">Poppins</option>
+                <option value="Arial, sans-serif">Arial</option>
+                <!-- Agrega más opciones según sea necesario -->
+            </select>
+        </div>
+    </div>
+
+    <!-- Configuraciones de Perfil -->
+    <div class="config-section">
+        <h2>Configuraciones de Perfil</h2>
+        <div class="config-item">
+            <label for="profileName">Nombre:</label>
+            <input type="text" id="profileName" name="profileName">
+        </div>
+        <div class="config-item">
+            <label for="profileImage">Imagen de Perfil:</label>
+            <input type="file" id="profileImage" name="profileImage">
+        </div>
+    </div>
+
+    <!-- Botón de Guardar Configuración -->
+    <button class="save-button">Guardar Configuración</button>
+</div>

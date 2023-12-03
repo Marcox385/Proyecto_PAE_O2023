@@ -1,0 +1,47 @@
+.publication-form {
+    margin-left: 20%;
+    padding: 20px;
+    width: 90%;
+    max-width: 1200px;
+}
+
+.publication-form h1 {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    margin-bottom: 30px;
+}
+
+.publication-form form {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.publication-form label {
+    font-size: 25px;
+    margin-bottom: 15px;
+}
+
+.publication-form input,
+.publication-form textarea {
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 500px;
+    height: 100px;
+}
+
+.publication-form button {
+    width: 520px;
+    background-color: #4E2A94;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 2%;
+    transition: background-color 0.3s;
+}
+
+.publication-form button:hover {
+    background-color: #333;
+}

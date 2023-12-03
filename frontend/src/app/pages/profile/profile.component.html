@@ -1,0 +1,37 @@
+<bgc-sidebar></bgc-sidebar>
+<div class="profile-container">
+    <h1>Perfil de Usuario</h1>
+
+    <!-- Información del Usuario -->
+    <div class="user-info">
+        <div class="avatar">
+            <img src="/assets/dummipic.jpg" alt="Avatar" />
+        </div>
+        <div class="details">
+            <p><i class="fa fa-user" aria-hidden="true"></i> Nombre de Usuario: Juan</p>
+            <p><i class="fa fa-envelope" aria-hidden="true"></i> Correo Electrónico: juan@example.com</p>
+        </div>
+    </div>
+
+    <!-- Configuraciones del Perfil -->
+    <div class="profile-settings">
+        <h2>Configuraciones del Perfil</h2>
+
+        <div class="config-item">
+            <label for="displayName">Nombre para Mostrar:</label>
+            <input type="text" id="displayName" name="displayName" placeholder="Caracoles" />
+        </div>
+
+        <div class="config-item">
+            <label for="bio">Biografía:</label>
+            <textarea id="bio" name="bio" placeholder="Hola, soy un creador de bugs!"></textarea>
+        </div>
+
+        <div class="config-item">
+            <label for="avatar">Avatar:</label>
+            <input type="file" id="avatar" name="avatar" accept="image/*" />
+        </div>
+
+        <button class="save-button">Guardar Configuración</button>
+    </div>
+</div>

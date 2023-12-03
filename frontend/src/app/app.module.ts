@@ -21,6 +21,10 @@ import { PublicationComponent } from './pages/publication/publication.component'
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { PuplishedCommentsComponent } from './pages/publication/puplished-comments/puplished-comments.component';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { SignupComponent } from './pages/signup/signup.component';
+import { ConfigComponent } from './pages/config/config.component';
+import { PostComponent } from './pages/publication/post/post.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +36,10 @@ import { PuplishedCommentsComponent } from './pages/publication/puplished-commen
     SidebarComponent,
     PublicationComponent,
     PuplishedCommentsComponent,
+    ProfileComponent,
+    SignupComponent,
+    ConfigComponent,
+    PostComponent,
   ],
   imports: [
     BrowserModule,

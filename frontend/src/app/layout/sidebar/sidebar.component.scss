@@ -2,9 +2,10 @@
     width: 200px;
     height: 100%;
     margin: 10px;
+    background-color: #fff;
 }
 
-.sidebar button {
+.sidebar a {
     display: block;
     word-spacing: 5px;
     margin-bottom: 10px;
@@ -14,7 +15,7 @@
     transition: background-color 0.3s;
 }
 
-.sidebar button:hover {
+.sidebar a:hover {
     background-color: #4E2A94;
     color: #fff;
 }

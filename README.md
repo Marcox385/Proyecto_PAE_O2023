@@ -1,22 +1,28 @@
 # Tareas Faltantantes
 
 ## Implementación de todas las pantallas en angular:
-- [ ] Login / Registro
-- [ ] Home (visualización de publicaciones estilo feed)
+- [X] Login / Registro
+- [X] Home (visualización de publicaciones estilo feed)
 - [ ] | Secciones | Filtros
-- [ ] Perfil(es) | Editar perfil
-- [ ] Publicación/Comentarios
-- [ ] Mensajes privados
-- [ ] Configuración
+- [X] Perfil(es) | Editar perfil
+- [X] Publicación/Comentarios
+- [X] Configuración
+- [ ] Pantalla Para GPT
 
-## Autenticación
+## Autenticación //Cris Diaz
 - [ ] Comprobar funcionamiento de autenticación
 - [ ] Comprobar funcionamiento de autenticación Google
+
+## Llamadas dentro del front
+- [ ] Post en Home al hacerlo desde publicate
+- [ ] Comentarios visibles en publicación al hacer post
+- [ ] Llamada de pic en el profile, nombre y biografía, igual en config
+- [ ] Nombre de ususario en publicación y fecha actual de esta
 
 ## Archivos
 - [x] Integración de Multer
 
-## Permisos
+## Permisos //Cris Ochoa & Cris Diaz
 - [ ] Implementar guardianes a pantallas correspondientes
 - [ ] Implementación de google autenticator
 
@@ -27,7 +33,7 @@
 - [x] Twilio (envío de mensajes a través de Whatsapp hacía usuarios)
 - [x] GPT (sugerencias de respuestas a entradas del foro)
 
-## Otros
+## Otros //Team
 - [ ] Altas y bajas en general
 
 # Pruebas

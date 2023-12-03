@@ -1,10 +1,12 @@
 <mat-drawer-container class="container">
     <div class="sidebar">
-        <h2>Home</h2>
-        <button class="filter-button" data-filter="tags"> <i class="fa fa-tags" aria-hidden="true"></i> Tags</button>
-        <button class="filter-button" data-filter="usuarios"> <i class="fa fa-users" aria-hidden="true"></i>
-            Usuarios</button>
-        <button class="filter-button" data-filter="companies"> <i class="fa fa-compass" aria-hidden="true"></i>
-            Companies</button>
+        <a mat-button routerLink="#"><i class="fa fa-tags" aria-hidden="true"></i>
+            Tags</a>
+        <a mat-button routerLink="#"><i class="fa fa-users" aria-hidden="true"></i>
+            Usuarios</a>
+        <a mat-button routerLink="#"><i class="fa fa-compass" aria-hidden="true"></i>
+            Companies</a>
+        <a mat-button routerLink="/post"><i class="fa fa-address-book" aria-hidden="true"></i>
+            Postea algo</a>
     </div>
 </mat-drawer-container>
