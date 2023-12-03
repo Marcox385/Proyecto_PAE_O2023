@@ -1,0 +1,22 @@
+@import 'src/styles.scss';
+
+content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100vh;
+    margin: 0;
+
+    h1 {
+        font-size: xx-large;
+        font-weight: bolder;
+        margin: 40px 0;
+    }
+
+    h2 {
+        font-size: large;
+        color: $highlight-color;
+    }
+}

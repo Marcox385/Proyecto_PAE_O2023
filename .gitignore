@@ -1,6 +1,5 @@
 # Archivos específicos
 *.env
-environment.ts
 
 # Directorios específicos
 .vscode/
