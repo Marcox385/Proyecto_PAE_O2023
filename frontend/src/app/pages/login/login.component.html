@@ -3,24 +3,24 @@
     <h1>Login</h1>
 
     <mat-form-field>
-        <mat-label>Correo</mat-label>
-        <input matInput type="email" name="mail" formControlName="mail">
-        <mat-icon matSuffix>mail</mat-icon>
-        <mat-error *ngIf="hasError('mail', 'required')">El campo es requerido</mat-error>
+      <mat-label>Correo</mat-label>
+      <input matInput type="email" name="mail" formControlName="mail">
+      <mat-icon matSuffix>mail</mat-icon>
+      <mat-error *ngIf="hasError('mail', 'required')">El campo es requerido</mat-error>
     </mat-form-field>
 
     <mat-form-field>
-        <mat-label>Teléfono</mat-label>
-        <input matInput type="tel" name="phone" formControlName="phone">
-        <mat-icon matSuffix>phone</mat-icon>
-        <mat-error *ngIf="hasError('phone', 'required')">El campo es requerido</mat-error>
+      <mat-label>Teléfono</mat-label>
+      <input matInput type="tel" name="phone" formControlName="phone">
+      <mat-icon matSuffix>phone</mat-icon>
+      <mat-error *ngIf="hasError('phone', 'required')">El campo es requerido</mat-error>
     </mat-form-field>
 
     <mat-form-field>
-        <mat-label>Contraseña</mat-label>
-        <input matInput type="password" name="password" formControlName="password">
-        <mat-icon matSuffix>password</mat-icon>
-        <mat-error *ngIf="hasError('password', 'required')">El campo es requerido</mat-error>
+      <mat-label>Contraseña</mat-label>
+      <input matInput type="password" name="password" formControlName="password">
+      <mat-icon matSuffix>password</mat-icon>
+      <mat-error *ngIf="hasError('password', 'required')">El campo es requerido</mat-error>
     </mat-form-field>
 
     <div id="controls">
@@ -30,7 +30,7 @@
       <button mat-flat-button color="primary" [disabled]="loginForm.invalid" (click)="login('', '')">Ingresa</button>
     </div>
     <hr>
-  
+
     <p>¿Aún no tienes cuenta? <a routerLink="/signup">Regístrate aquí</a></p>
   </form>
 </content>
