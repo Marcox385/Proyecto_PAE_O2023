@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router'
+import { PostService } from 'src/app/services/publics/post.service';
 
 @Component({
   selector: 'bgc-home',
@@ -7,8 +8,11 @@ import { Router } from '@angular/router'
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  publications: any[] = [];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private postService: PostService) {
+    this.publications = this.postService.obtenerPublicaciones();
+  }
 
   ngOnInit(): void {
     throw new Error('Method not implemented.');
