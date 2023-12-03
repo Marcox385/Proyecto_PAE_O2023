@@ -1,7 +1,15 @@
 import { Component } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { Token } from 'src/app/shared/interfaces/token';
+import { TokenService } from 'src/app/shared/services/token.service';
+import { UserService } from 'src/app/shared/services/user.service';
+
+import { jwtDecode } from 'jwt-decode';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'bgc-login',
@@ -11,11 +19,15 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class LoginComponent {
 
   loginForm: FormGroup;
+  disallowUse: boolean = false;
 
   constructor(
     formBuilder: FormBuilder,
     private authService: AuthService,
-  ) {
+    private userService: UserService,
+    private tokenService: TokenService,
+    private router: Router,
+    private _snackBar: MatSnackBar) {
     this.loginForm = formBuilder.group({
       mail: ['', [Validators.email]],
       phone: [''],
@@ -32,11 +44,40 @@ export class LoginComponent {
     return (mail || phone) ? null : { match: true };
   }
 
-  login(user: string, password: string) {
-    this.authService.login(user, password)
-  }
+  // TODO: Change this for Google Authentication, login should be for native validation
+  // login(user: string, password: string) {
+  //   this.authService.login(user, password)
+  // }
 
   hasError(controlName: string, errorName: string) {
     return this.loginForm.controls[controlName].errors && this.loginForm.controls[controlName].errors![errorName];
   }
+
+  openSnackBar(message: string) {
+    this._snackBar.open(message, 'OK');
+  }
+
+  login() {
+    this.disallowUse = true;
+    const { mail, phone, password } = this.loginForm.getRawValue();
+    this.userService.login(mail, phone, password).subscribe({
+      next: (response: Token) => {
+        console.log(response);
+        setTimeout(() => {
+          this.tokenService.save(response.accessToken, response.refreshToken);
+          this.router.navigate(['home']);
+          const data: any = jwtDecode(response.accessToken);
+          const { username, mail, phone } = data;
+          this.userService.user.next({ username, mail, phone });
+        });
+      },
+      error: (err: Error) => {
+        if (err instanceof HttpErrorResponse) {
+          this.openSnackBar('Credenciales incorrectas.');
+        }
+        this.disallowUse = false;
+      }
+    });
+  };
+
 }

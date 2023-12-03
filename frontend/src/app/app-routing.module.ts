@@ -10,8 +10,8 @@ import { PuplishedCommentsComponent } from './pages/publication/puplished-commen
 import { PostComponent } from './pages/publication/post/post.component';
 import { NotfoundComponent } from './pages/notfound/notfound.component';
 
-import { AuthGuard } from './guards/auth.guard';
-import { UnauthGuard } from './guards/unauth.guard';
+import { AuthGuard } from './shared/guards/auth.guard';
+import { UnauthGuard } from './shared/guards/unauth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },

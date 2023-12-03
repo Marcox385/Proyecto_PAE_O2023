@@ -5,9 +5,10 @@
     <span class="spacer"></span>
 
     <div *ngIf="loginStatus">
-        <a mat-button routerLink="home">Home</a>
-        <a mat-button routerLink="profile">Profile</a>
-        <a mat-button routerLink="config">Config</a>
+        <a mat-button routerLink="home">Inicio</a>
+        <a mat-button routerLink="profile">Perfil</a>
+        <!-- <a mat-button routerLink="config">Config</a> TODO: Remove configuration (not needed) -->
+        <a mat-button (click)="logout()">Salir</a>
     </div>
 
     <div *ngIf="!loginStatus">

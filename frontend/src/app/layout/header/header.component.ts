@@ -1,10 +1,10 @@
 import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { Component } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
-import { User } from 'src/interfaces/user';
-import { UserService } from 'src/app/services/user.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { User } from 'src/app/shared/interfaces/user';
+import { UserService } from 'src/app/shared/services/user.service';
 import { Router } from '@angular/router';
-import { LoginService } from 'src/app/services/login.service';
+import { TokenService } from 'src/app/shared/services/token.service';
 
 
 @Component({
@@ -14,27 +14,39 @@ import { LoginService } from 'src/app/services/login.service';
 })
 export class HeaderComponent {
 
-  user: User = { name: 'Testing', email: '' };
+  user: User = { username: 'Testing' };
 
   loginStatus: boolean = false;
 
   constructor(
-    userService: UserService,
+    private userService: UserService,
     private router: Router,
     private socialAuth: SocialAuthService,
-    // private loginService: LoginService
+    private tokenService: TokenService
   ) {
-    userService.selectedUser.subscribe((user: User) => {
+    userService.user.subscribe((user: User) => {
       this.user = user;
     });
 
-
     this.socialAuth.authState.subscribe((user: SocialUser) => {
       console.log('Social user: ', user);
-    })
+    });
+
+    this.tokenService.loginStatus.subscribe((status: boolean) => {
+      this.loginStatus = status;
+    });
   }
 
   logout() {
-    this.router.navigate(['login']);
+    this.userService.logout(this.tokenService.getRefreshToken()).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.tokenService.remove();
+        this.router.navigate(['login']);
+      },
+      error: (err: Error) => {
+        console.log(err);
+      }
+    });
   }
 }
