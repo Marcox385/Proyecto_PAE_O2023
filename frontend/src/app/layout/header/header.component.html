@@ -1,14 +1,17 @@
 <mat-toolbar>
-    <img src="assets/icon_white.png" alt="">
-    <span>Bug's Creators</span>
+    <img src="assets/icon_white.png" alt="Bug's Creators logo" routerLink="home">
+    <span routerLink="home">Bug's Creators</span>
+    
     <span class="spacer"></span>
-    <span *ngIf="user" class=""> {{ user.name }} </span>
 
-    <div class="links">
-        <a mat-button routerLink="signup">Signup</a>
-        <a mat-button routerLink="login">Login</a>
+    <div *ngIf="loginStatus">
         <a mat-button routerLink="home">Home</a>
         <a mat-button routerLink="profile">Profile</a>
         <a mat-button routerLink="config">Config</a>
+    </div>
+
+    <div *ngIf="!loginStatus">
+        <a mat-button routerLink="signup">Signup</a>
+        <a mat-button routerLink="login">Login</a>
     </div>
 </mat-toolbar>

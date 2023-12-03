@@ -10,19 +10,12 @@ mat-toolbar {
         width: 60px;
     }
 
-    .links {
-        display: inline-block;
-        display: flex;
-        align-items: flex-end;
-        justify-content: flex-end;
-    }
-
     a {
         color: white;
         margin-right: 10px;
 
         &:hover {
-            color: #4E2A94;
+            color: $theme-main;
         }
     }
 }
@@ -31,8 +24,14 @@ span {
     color: #fff;
     font-family: "Poppins";
     font-weight: bold;
+}
 
-    // &::before {
-    //     content: url("assets/icon.png");
-    // }
+img, span {
+    &[routerLink="home"] {
+        cursor: pointer;
+    }
+}
+
+.spacer {
+    flex: 1 1 auto;
 }

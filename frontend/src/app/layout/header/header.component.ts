@@ -14,7 +14,7 @@ import { LoginService } from 'src/app/services/login.service';
 })
 export class HeaderComponent {
 
-  user: User = { name: '', email: '' };
+  user: User = { name: 'Testing', email: '' };
 
   loginStatus: boolean = false;
 
