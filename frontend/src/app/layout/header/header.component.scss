@@ -3,7 +3,7 @@
 @import url("https://fonts.googleapis.com/css?family=Poppins");
 
 mat-toolbar {
-    background-color: #333;
+    background-color: $theme-accent;
     color: #fff;
 
     img {
@@ -15,7 +15,7 @@ mat-toolbar {
         margin-right: 10px;
 
         &:hover {
-            color: $theme-main;
+            color: $highlight-color;
         }
     }
 }

@@ -1,21 +1,18 @@
-.container {
-    width: 200px;
-    height: 100%;
-    margin: 10px;
-    background-color: #fff;
-}
+@import 'src/styles.scss';
 
-.sidebar a {
+span {
+    height: 30px;
     display: block;
-    word-spacing: 5px;
-    margin-bottom: 10px;
-    background-color: #fff;
-    border: 2px solid #fff;
     font-size: 18px;
     transition: background-color 0.3s;
-}
+    line-height: 30px;
+    margin: 10px 0;
+    padding: 6px;
+    border-radius: 5px;
+    cursor: pointer;
 
-.sidebar a:hover {
-    background-color: #4E2A94;
-    color: #fff;
+    &:hover {
+        background-color: $highlight-color;
+        color: #fff;
+    }
 }
