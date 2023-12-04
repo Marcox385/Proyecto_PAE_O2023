@@ -11,7 +11,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 })
 export class HomeComponent {
 
-  user: User = {username: ''};
+  user: User = { username: '' };
   publications: any[] = [];
 
   constructor(
@@ -33,5 +33,11 @@ export class HomeComponent {
 
   routePublication(publicationId: string) {
     this.router.navigate(['/publication', publicationId]);
+  }
+
+  formatPublicationDate(dateString: string): string {
+    // Formatea la fecha utilizando el objeto Date de JavaScript
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
   }
 }

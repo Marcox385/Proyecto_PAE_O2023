@@ -5,14 +5,15 @@
     <h2 *ngIf="publications.length == 0">Aún no hay publicaciones disponibles...</h2>
 
     <div class="post" *ngFor="let publication of publications">
-        <h2><a (click)="routePublication(publication.id)"> {{ publication.title }} </a> </h2>
+        <h2><a (click)="routePublication(publication)"> {{ publication.title }} </a>
+        </h2>
         <div class="tags"> {{ publication.tags }} </div>
         <p> {{ publication.description }} </p>
         <div class="post-user">
-            <span> <i class="fa fa-user" aria-hidden="true"></i> Usuario: {{ publication.user }} </span>
+            <span> <i class="fa fa-user" aria-hidden="true"></i> Usuario: {{ user.username }} </span>
         </div>
         <div class="post-date">
-            <span>Fecha: {{ publication.date }}</span>
+            <span>Fecha: {{ formatPublicationDate(publication.date) }}</span>
         </div>
     </div>
 </div>
