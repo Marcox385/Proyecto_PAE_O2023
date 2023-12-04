@@ -1,36 +1,52 @@
-<div class="profile-container">
-    <h1>Perfil de Usuario</h1>
+<div id="profile-container">
+    <div id="container">
+        <h1>Perfil de usuario</h1>
 
-    <!-- Información del Usuario -->
-    <div class="user-info">
-        <div class="avatar">
-            <img src="/assets/dummipic.jpg" alt="Avatar" />
-        </div>
-        <div class="details">
-            <p><i class="fa fa-user" aria-hidden="true"></i> Nombre de Usuario: Juan</p>
-            <p><i class="fa fa-envelope" aria-hidden="true"></i> Correo Electrónico: juan&commat;example.com</p>
-        </div>
-    </div>
-
-    <!-- Configuraciones del Perfil -->
-    <div class="profile-settings">
-        <h2>Configuraciones del Perfil</h2>
-
-        <div class="config-item">
-            <label for="displayName">Nombre para Mostrar:</label>
-            <input type="text" id="displayName" name="displayName" placeholder="Caracoles" />
+        <div id="image-container">
+            <img src="assets/dummipic.jpg" alt="Default image" *ngIf="!picture">
+            <img [src]="picture" alt="Default image" *ngIf="picture">
+            <button mat-icon-button (click)="showFS(fileInput)" id="edit-photo">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <input #fileInput type="file" (change)="selectFile($event)">
         </div>
 
-        <div class="config-item">
-            <label for="bio">Biografía:</label>
-            <textarea id="bio" name="bio" placeholder="Hola, soy un creador de bugs!"></textarea>
-        </div>
+        <div id="user-data">
+            <mat-card>
+                <mat-card-content>
+                    <form [formGroup]="profileForm">
+                        <mat-form-field appearance="outline" floatLabel="always" [hideRequiredMarker]="!editMode">
+                            <mat-label>Nombre</mat-label>
+                            <input type="text" matInput placeholder="Nombre" name="username" formControlName="username" [value]="user.username" [readonly]="!editMode">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" floatLabel="always" [hideRequiredMarker]="!editMode">
+                            <mat-label>Correo</mat-label>
+                            <input type="email" matInput placeholder="Correo" name="mail" formControlName="mail" [value]="user.username" [readonly]="!editMode">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" floatLabel="always" [hideRequiredMarker]="!editMode">
+                            <mat-label>Teléfono</mat-label>
+                            <input type="tel" matInput placeholder="Teléfono" name="phone" formControlName="phone" [value]="user.username" [readonly]="!editMode">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" floatLabel="always" *ngIf="editMode">
+                            <mat-label>Nueva contraseña</mat-label>
+                            <input type="password" matInput placeholder="Nueva contraseña" name="password" formControlName="password">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" floatLabel="always" *ngIf="editMode">
+                            <mat-label>Confirmar contraseña</mat-label>
+                            <input type="password" matInput placeholder="Confirmar contraseña" name="confirm" formControlName="confirm">
+                        </mat-form-field>
 
-        <div class="config-item">
-            <label for="avatar">Avatar:</label>
-            <input type="file" id="avatar" name="avatar" accept="image/*" />
-        </div>
+                        <div id="controls" *ngIf="!editMode">
+                            <button mat-flat-button color="primary" (click)="editData()">Editar datos</button>
+                        </div>
 
-        <button class="save-button">Guardar Configuración</button>
+                        <div id="edit-controls" *ngIf="editMode">
+                            <button mat-flat-button color="primary" (click)="editData()">Actualizar</button>
+                            <button mat-flat-button color="warn" (click)="cancel()">Cancelar</button>
+                        </div>
+                    </form>
+                </mat-card-content>
+            </mat-card>
+        </div>
     </div>
 </div>

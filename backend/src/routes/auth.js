@@ -94,6 +94,8 @@ router.post('/login', (req, res) => {
                     // Generate access and refresh tokens for application accessing
                     user.id = _id;
                     user.username = username;
+                    user.mail = response.mail;
+                    user.phone = response.phone;
 
                     const accessToken = jwt.sign(user, process.env.JWT_SECRET_KEY, { expiresIn: '2h' });
                     const refreshToken = jwt.sign(user, process.env.REFRESH_SECRET_KEY, { expiresIn: '6d' });

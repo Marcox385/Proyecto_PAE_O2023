@@ -2,6 +2,8 @@ import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { User } from 'src/app/shared/interfaces/user';
 import { Notification } from 'src/app/shared/interfaces/notification';
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -27,7 +29,8 @@ export class HeaderComponent {
     private router: Router,
     private socialAuth: SocialAuthService,
     private tokenService: TokenService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private _snackBar: MatSnackBar
   ) {
     userService.user.subscribe((user: User) => {
       this.user = user;
@@ -52,6 +55,10 @@ export class HeaderComponent {
     this.notificationService.readNotifications();
   }
 
+  openSnackBar(message: string) {
+    this._snackBar.open(message, 'OK');
+  }
+
   logout() {
     this.userService.logout(this.tokenService.getRefreshToken()).subscribe({
       next: (response) => {
@@ -59,6 +66,7 @@ export class HeaderComponent {
         this.tokenService.remove();
         this.router.navigate(['login']);
         this.notificationService.socket.disconnect();
+        this.openSnackBar('Logout exitoso.');
       },
       error: (err: Error) => {
         console.log(err);

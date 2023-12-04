@@ -71,8 +71,9 @@ export class LoginComponent {
           this.tokenService.save(response.accessToken, response.refreshToken);
           this.router.navigate(['home']);
           const data: any = jwtDecode(response.accessToken);
-          const { username, mail, phone } = data;
-          this.userService.user.next({ username, mail, phone });
+          const { id, username, mail, phone } = data;
+          this.userService.user.next({ id, username, mail, phone });
+          console.log(data);
 
           this.notificationService.socket.emit('joinRoom', data.id);
           this.notificationService.socket.on('commentNotification', (notification:Notification) => {

@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from './../interfaces/user';
 import { Token } from './../interfaces/token';
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class UserService {
     username: ''
   });
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private tokenService: TokenService) { }
 
   // getUsers(): Observable<User[]> {
   //   const url: string = environment.apiUrl + 'users';
@@ -48,5 +49,24 @@ export class UserService {
     };
 
     return this.httpClient.delete(url, options);
+  }
+
+  uploadPicture(input: HTMLInputElement) {
+    const url = `${environment.API_URL}api/users/picture`;
+
+    const headers = {
+      // 'Content-Type': 'multipart/form-data',
+      'Authorization': `Bearer ${this.tokenService.getAccessToken()}`
+    }
+
+    const formData = new FormData();
+    formData.append('file', input.files![0]);
+
+    return this.httpClient.post(url, formData, { headers });
+  }
+
+  getPicture(): Observable<Blob> {
+    const url = `${environment.API_URL}imgs/${this.user.getValue().id}.jpg`;
+    return this.httpClient.get(url, { responseType: 'blob' });
   }
 }
