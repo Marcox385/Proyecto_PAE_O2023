@@ -11,6 +11,7 @@ import { RecuadroComponent } from 'src/app/layout/recuadro/recuadro.component';
 })
 export class PublicationComponent implements OnInit {
   publicacionId: string | null = null; // Almacena el id de la publicación
+  publicationData: any = '';
 
   constructor(private route: ActivatedRoute, private publicationService: PublicationService, private dialog: MatDialog) { }
 

@@ -18,6 +18,14 @@ mat-toolbar {
             color: $highlight-color;
         }
     }
+
+    mat-icon {
+        color: #FFF;
+    }
+
+    .menu-style {
+        background-color: black;
+    }
 }
 
 span {
