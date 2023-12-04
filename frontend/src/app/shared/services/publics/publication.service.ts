@@ -15,4 +15,15 @@ export class PublicationService {
     const url = `${this.apiUrl}/post/${id}`; // Ajusta la URL según tu API
     return this.http.get(url);
   }
+
+  newPost(title: string, description: string, tags: string): Observable<any> {
+    const tagsSplit = tags.split(',');
+    const body = {
+      title,
+      description,
+      tags: tagsSplit
+    };
+    const url = `${environment.API_URL}/posts/new`;
+    return this.http.post(url, body);
+  }
 }
