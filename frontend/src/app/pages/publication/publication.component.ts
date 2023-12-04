@@ -9,6 +9,7 @@ import { PublicationService } from 'src/app/services/publics/publication.service
 })
 export class PublicationComponent implements OnInit {
   publicacionId: string | null = null; // Almacena el id de la publicación
+  publicationData: any = '';
 
   constructor(private route: ActivatedRoute, private publicationService: PublicationService) { }
 

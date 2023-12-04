@@ -75,6 +75,8 @@ export class SignupComponent {
         if (err instanceof HttpErrorResponse) {
           if (err.status === 409) {
             this.openSnackBar('El usuario ya existe.');
+          } else {
+            this.openSnackBar('No fue posible realizar el registro.');
           }
           this.disallowUse = false;
         }
