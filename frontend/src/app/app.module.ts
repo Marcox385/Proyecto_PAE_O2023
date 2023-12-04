@@ -17,6 +17,7 @@ import { environment } from '../environments/environment'
 import { HttpClientModule } from '@angular/common/http';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatListModule } from '@angular/material/list';
 import { PublicationComponent } from './pages/publication/publication.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -57,7 +58,8 @@ import { NotfoundComponent } from './pages/notfound/notfound.component';
     MatButtonModule,
     MatIconModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatSnackBarModule
   ],
   providers: [
     {

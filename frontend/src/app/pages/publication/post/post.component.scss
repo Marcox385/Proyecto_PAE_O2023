@@ -15,16 +15,14 @@
 .publication-form form {
     display: flex;
     flex-direction: column;
-
 }
 
-.publication-form label {
+.publication-form mat-label {
     font-size: 25px;
     margin-bottom: 15px;
 }
 
-.publication-form input,
-.publication-form textarea {
+.publication-form input {
     padding: 10px;
     margin-bottom: 15px;
     width: 500px;

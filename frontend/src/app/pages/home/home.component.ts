@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router'
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { PostService } from 'src/app/services/publics/post.service';
 
 @Component({
@@ -7,18 +7,19 @@ import { PostService } from 'src/app/services/publics/post.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
   publications: any[] = [];
 
-  constructor(private router: Router, private postService: PostService) {
-    this.publications = this.postService.obtenerPublicaciones();
-  }
+  constructor(private router: Router, private postService: PostService) { }
 
   ngOnInit(): void {
-    console.log('Successfull access');
+    console.log('Successful access');
+    this.postService.obtenerPublicaciones().subscribe((publications) => {
+      this.publications = publications;
+    });
   }
 
-  routePulication() {
-    this.router.navigate(['/publication']);
+  routePublication(publicationId: string) {
+    this.router.navigate(['/publication', publicationId]);
   }
 }

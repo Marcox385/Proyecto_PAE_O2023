@@ -1,15 +1,27 @@
 <div class="publication-form">
     <h1>Publica algo!</h1>
-    <form>
-        <label for="title">Título:</label>
-        <input type="title" id="titulo" name="titulo" required>
+    <form [formGroup]="publicacionForm" (ngSubmit)="enviarPublicacion()">
 
-        <label for="tags">Etiquetas:</label>
-        <input type="tags" id="etiquetas" name="etiquetas" required>
+        <mat-form-field>
+            <mat-label>Título</mat-label>
+            <input matInput type="text" name="titulo" formControlName="titulo" required>
+        </mat-form-field>
 
-        <label for="description">Descripción:</label>
-        <textarea id="description" name="descripcion" required></textarea>
+        <mat-form-field>
+            <mat-label>Code o stuff</mat-label>
+            <input matInput type="text" name="code" formControlName="code">
+        </mat-form-field>
 
-        <button type="submit">Publicar</button>
+        <mat-form-field>
+            <mat-label>Etiquetas</mat-label>
+            <input matInput type="text" name="etiquetas" formControlName="etiquetas">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Descripción</mat-label>
+            <input matInput type="text" name="descripcion" formControlName="descripcion" required>
+        </mat-form-field>
+
+        <button mat-flat-button color="primary">Publicar</button>
     </form>
 </div>

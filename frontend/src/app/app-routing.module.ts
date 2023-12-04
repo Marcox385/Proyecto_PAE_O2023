@@ -15,10 +15,10 @@ import { UnauthGuard } from './shared/guards/unauth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent, canActivate: [UnauthGuard] }, 
+  { path: 'login', component: LoginComponent, canActivate: [UnauthGuard] },
   { path: 'signup', component: SignupComponent, canActivate: [UnauthGuard] },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'publication', component: PublicationComponent, canActivate: [AuthGuard] },
+  { path: 'publication/:id', component: PublicationComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'config', component: ConfigComponent, canActivate: [AuthGuard] },
   { path: 'published-comments', component: PuplishedCommentsComponent, canActivate: [AuthGuard] },
