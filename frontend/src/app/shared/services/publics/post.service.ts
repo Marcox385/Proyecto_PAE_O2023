@@ -16,11 +16,19 @@ export class PostService {
     private tokenService: TokenService
   ) {}
 
-  agregarPublicacion(publication: any, userName: string, date: string) {
-    const newPublication = { ...publication, user: userName, date: date };
-    const currentPublications = this._publications.value;
-    currentPublications.push(newPublication);
-    this._publications.next(currentPublications);
+  addPost(data: object): Observable<any> {
+    // const currentPublications = this._publications.value;
+    // currentPublications.push(newPublication);
+    // this._publications.next(currentPublications);
+
+    const url = `${environment.API_URL}api/posts/new`;
+
+    const headers = {
+      // 'Content-Type': 'multipart/form-data',
+      'Authorization': `Bearer ${this.tokenService.getAccessToken()}`
+    }
+
+    return this.httpClient.post(url, data, { headers });
   }
 
   getPosts(searchTerm: string): Observable<any> {

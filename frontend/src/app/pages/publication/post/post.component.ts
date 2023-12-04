@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PostService } from 'src/app/shared/services/publics/post.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TokenService } from 'src/app/shared/services/token.service';
+import { User } from 'src/app/shared/interfaces/user';
+import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'bgc-post',
@@ -10,9 +13,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./post.component.scss']
 })
 export class PostComponent implements OnInit {
-  publicacionForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private postService: PostService, private router: Router, private snackBar: MatSnackBar,
+  publicacionForm: FormGroup;
+  user: User = { username: '' };
+
+  constructor(
+    private fb: FormBuilder,
+    private postService: PostService,
+    private router: Router,
+    private _snackBar: MatSnackBar,
+    private tokenService: TokenService,
+    private userService: UserService
   ) {
     // Inicializar el formulario principal
     this.publicacionForm = this.fb.group({
@@ -20,29 +31,38 @@ export class PostComponent implements OnInit {
       tags: [''],
       description: ['', Validators.required],
     });
+
+    userService.user.subscribe((user: User) => {
+      this.user = user;
+    });
   }
   ngOnInit(): void {
     console.log('info guardada');
   }
 
+  openSnackBar(message: string) {
+    this._snackBar.open(message, 'OK');
+  }
+
   enviarPublicacion() {
-    const userName = "Juan?";
-    const date = new Date().toISOString();
+    // const date = new Date().toISOString();
 
     const newPublication = {
       title: this.publicacionForm.value.title,
-      tags: this.publicacionForm.value.tags,
+      tags: this.publicacionForm.value.tags.split(','),
       description: this.publicacionForm.value.description,
-      user: userName,
-      date: date,
+      notifyUser: true
     };
 
-    this.postService.agregarPublicacion(newPublication, userName, date);
-
-    this.snackBar.open('Publicación exitosa', 'Cerrar', {
-      duration: 10000,
+    this.postService.addPost(newPublication).subscribe({
+      next: (response: any) => {
+        console.log(response);
+        this.openSnackBar('Publicación creada');
+        this.router.navigate(['home']);
+      },
+      error: (error) => {
+        console.log(error);
+      }
     });
-
-    this.router.navigate(['/home']);
   }
 }
