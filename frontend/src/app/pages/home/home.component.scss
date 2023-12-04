@@ -1,9 +1,15 @@
+@import 'src/styles.scss';
+
 h1 {
     font-size: 45px;
     font-weight: 700;
     letter-spacing: -1.5px;
     margin: 0;
     margin-bottom: 15px;
+
+    span {
+        color: $highlight-color;
+    }
 }
 
 p {
