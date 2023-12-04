@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { PublicationService } from 'src/app/shared/services/publics/publication.service';
 import { RecuadroComponent } from 'src/app/layout/recuadro/recuadro.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'bgc-publication',
@@ -50,6 +51,7 @@ export class PublicationComponent implements OnInit {
     this.publicationData.comments.push(newComment);
 
     // llamada al backend 
+    const url = `${environment.API_URL}/posts/`;
 
     // Actualizar la vista
     // Llamada. hacer algo como:
