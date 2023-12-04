@@ -12,7 +12,7 @@ export class PublicationService {
   constructor(private http: HttpClient) { }
 
   getPublicationById(id: string): Observable<any> {
-    const url = `${this.apiUrl}/post/${id}`; // Ajusta la URL según tu API
+    const url = `${environment.API_URL}/posts/new`;
     return this.http.get(url);
   }
 
@@ -23,7 +23,13 @@ export class PublicationService {
       description,
       tags: tagsSplit
     };
-    const url = `${environment.API_URL}/posts/new`;
+
+    const url = `${this.apiUrl}/posts/new`;
     return this.http.post(url, body);
+  }
+
+  getUserById(userId: string): Observable<any> {
+    const url = `${this.apiUrl}/users/${userId}`;
+    return this.http.get(url);
   }
 }

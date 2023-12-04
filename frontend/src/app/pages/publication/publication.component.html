@@ -1,19 +1,19 @@
 <div class="posts">
     <h1>Title</h1>
     <div class="post-date">
-        <span>Date: 2023-11-02</span>
+        <span> {{ publicationData.date }} </span>
     </div>
     <div class="post">
         <div class="post-user">
-            <!-- <span> <i class="fa fa-user" aria-hidden="true"></i> {{publicationData?.user}} </span> -->
+            <span> <i class="fa fa-user" aria-hidden="true"></i> {{ userData.user}} </span>
         </div>
         <div class="description">
             <!-- Muestra la descripción de la publicación -->
-            <!-- <p>{{ publicationData?.description }}</p> -->
+            <p>{{ publicationData.description }}</p>
         </div>
         <div class="tags">
             <!-- Muestra las etiquetas de la publicación -->
-            <!-- {{ publicationData?.tags }} -->
+            {{ publicationData.tags }}
         </div>
     </div>
     <div class="comments">

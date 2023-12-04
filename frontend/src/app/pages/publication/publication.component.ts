@@ -13,6 +13,7 @@ import { environment } from 'src/environments/environment';
 export class PublicationComponent implements OnInit {
   publicacionId: string | null = null; // Almacena el id de la publicación
   publicationData: any = '';
+  userData: any = '';
 
   constructor(private route: ActivatedRoute, private publicationService: PublicationService, private dialog: MatDialog) { }
 
@@ -23,6 +24,18 @@ export class PublicationComponent implements OnInit {
         this.publicationService.getPublicationById(this.publicacionId).subscribe(
           (data) => {
             this.publicationData = data;
+
+            // Llama al servicio de usuario para obtener los detalles del usuario
+            if (this.publicationData.userId) {
+              this.publicationService.getUserById(this.publicationData.userId).subscribe(
+                (userData) => {
+                  this.userData = userData;
+                },
+                (error) => {
+                  console.error('Error al obtener la información del usuario:', error);
+                }
+              );
+            }
           },
           (error) => {
             console.error('Error al obtener la información de la publicación:', error);
@@ -42,7 +55,7 @@ export class PublicationComponent implements OnInit {
 
   enviarComentario() {
     const newComment = {
-      user: "Juan?",
+      user: `${environment.API_URL}/users/{id}`,
       date: new Date().toISOString(),
       description: "El comentario del usuario"
     };
@@ -51,10 +64,10 @@ export class PublicationComponent implements OnInit {
     this.publicationData.comments.push(newComment);
 
     // llamada al backend 
-    const url = `${environment.API_URL}/posts/`;
+    const url = `${environment.API_URL}/posts/new`;
 
     // Actualizar la vista
     // Llamada. hacer algo como:
-    // this.publicationData = { ...this.publicationData };
+    this.publicationData = { ...this.publicationData };
   }
 }
