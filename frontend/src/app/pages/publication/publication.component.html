@@ -22,5 +22,6 @@
         <textarea id="comments" name="comments"></textarea>
         <button mat-raised-button>Post</button>
         <button mat-raised-button (click)="gptResponse()">GPT response</button>
+        <bgc-puplished-comments [comments]="publicationData.comments"></bgc-puplished-comments>
     </div>
 </div>

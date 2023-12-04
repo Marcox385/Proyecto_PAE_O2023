@@ -21,13 +21,10 @@ export class PublicationComponent implements OnInit {
       if (this.publicacionId) {
         this.publicationService.getPublicationById(this.publicacionId).subscribe(
           (data) => {
-            // Aquí asigna los datos obtenidos a propiedades del componente o realiza las acciones necesarias
-            // Por ejemplo, podrías asignar los datos a una propiedad llamada publicationData
-            // this.publicationData = data;
+            this.publicationData = data;
           },
           (error) => {
             console.error('Error al obtener la información de la publicación:', error);
-            // Maneja el error según tus necesidades
           }
         );
       }
@@ -38,7 +35,24 @@ export class PublicationComponent implements OnInit {
     this.dialog.open(RecuadroComponent, {
       width: '400px',
       height: '600px',
-      data: { /* Puedes pasar datos al recuadro si es necesario */ }
+      data: { /*Pasar dato?*/ }
     });
+  }
+
+  enviarComentario() {
+    const newComment = {
+      user: "Juan?",
+      date: new Date().toISOString(),
+      description: "El comentario del usuario"
+    };
+
+    // Agregar el comentario al arreglo de comentarios de la publicación
+    this.publicationData.comments.push(newComment);
+
+    // llamada al backend 
+
+    // Actualizar la vista
+    // Llamada. hacer algo como:
+    // this.publicationData = { ...this.publicationData };
   }
 }

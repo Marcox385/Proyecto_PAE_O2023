@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'bgc-puplished-comments',
@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./puplished-comments.component.scss']
 })
 export class PuplishedCommentsComponent {
-
+  @Input() comments: any[] = [];
 }
