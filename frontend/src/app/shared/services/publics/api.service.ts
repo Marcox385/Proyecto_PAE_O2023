@@ -8,11 +8,11 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = environment.GPT_API;
+  // private apiUrl = environment.GPT_API;
 
   constructor(private http: HttpClient) { }
 
-  obtenerDatos(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/ruta-de-endpoint`);
-  }
+  // obtenerDatos(): Observable<any> {
+  //   return this.http.get<any>(`${this.apiUrl}/ruta-de-endpoint`);
+  // }
 }

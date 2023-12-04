@@ -12,17 +12,19 @@ import { NotfoundComponent } from './pages/notfound/notfound.component';
 
 import { AuthGuard } from './shared/guards/auth.guard';
 import { UnauthGuard } from './shared/guards/unauth.guard';
+import { SearchComponent } from './pages/search/search.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, canActivate: [UnauthGuard] },
   { path: 'signup', component: SignupComponent, canActivate: [UnauthGuard] },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'publication/:id', component: PublicationComponent, canActivate: [AuthGuard] },
+  { path: 'publication/:id', component: PublicationComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'config', component: ConfigComponent, canActivate: [AuthGuard] },
   { path: 'published-comments', component: PuplishedCommentsComponent, canActivate: [AuthGuard] },
   { path: 'post', component: PostComponent, canActivate: [AuthGuard] },
+  { path: 'search', component: SearchComponent, canActivate: [AuthGuard] },
   { path: 'not-found', component: NotfoundComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'not-found' }
 ];

@@ -5,7 +5,7 @@
     <span class="spacer"></span>
 
     <button mat-icon-button [matMenuTriggerFor]="notifications" aria-label="Notifications" *ngIf="loginStatus" (click)="readNotifications()">
-        <mat-icon matBadgeColor="primary" >notifications</mat-icon>
+        <mat-icon matBadgeColor="primary">notifications</mat-icon>
         <span [matBadge]="notificationNumber" *ngIf="notificationNumber > 0"></span>
     </button>
     <mat-menu #notifications="matMenu" xPosition="before" backdropClass="menu-style">
@@ -17,6 +17,10 @@
         </button>
         <p mat-menu-item disabled *ngIf="currentNotifications.length == 0">No hay notificaciones nuevas</p>
     </mat-menu>
+
+    <button mat-icon-button aria-label="Search" *ngIf="loginStatus" routerLink="search">
+        <mat-icon matBadgeColor="primary">search</mat-icon>
+    </button>
 
     <div *ngIf="loginStatus">
         <a mat-button routerLink="home">Inicio</a>

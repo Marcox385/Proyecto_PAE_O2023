@@ -1,0 +1,22 @@
+<div class="container">
+    <form [formGroup]="searchForm">
+        <mat-form-field>
+            <input matInput type="text" name="searchTerm" formControlName="searchTerm" placeholder="Introduce tu búsqueda" [(ngModel)]="searchTerm">
+            <button matSuffix mat-icon-button aria-label="Search" *ngIf="searchTerm" (click)="searchPosts()">
+                <mat-icon>search</mat-icon>
+            </button>
+        </mat-form-field>
+    </form>
+
+    <div class="post" *ngFor="let result of results">
+        <h2><a> {{ result.title }} </a> </h2>
+        <div class="tags"> {{ result.tags }} </div>
+        <p> {{ result.description }} </p>
+        <div class="post-user">
+            <span> <i class="fa fa-user" aria-hidden="true"></i> Usuario: {{ result.user }} </span>
+        </div>
+        <div class="post-date">
+            <span>Fecha: {{ result.date }}</span>
+        </div>
+    </div>
+</div>

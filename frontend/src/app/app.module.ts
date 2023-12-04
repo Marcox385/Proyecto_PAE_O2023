@@ -30,6 +30,7 @@ import { PostComponent } from './pages/publication/post/post.component';
 import { NotfoundComponent } from './pages/notfound/notfound.component';
 import { RecuadroComponent } from './layout/recuadro/recuadro.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { SearchComponent } from './pages/search/search.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     PostComponent,
     NotfoundComponent,
     RecuadroComponent,
+    SearchComponent,
   ],
   imports: [
     BrowserModule,

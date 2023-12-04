@@ -26,7 +26,7 @@ export class HomeComponent {
 
   ngOnInit(): void {
     console.log('Successful access');
-    this.postService.obtenerPublicaciones().subscribe((publications) => {
+    this.postService.getPosts('').subscribe((publications) => {
       this.publications = publications;
     });
   }

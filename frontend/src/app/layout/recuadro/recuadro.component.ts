@@ -13,15 +13,15 @@ export class RecuadroComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<RecuadroComponent>, private apiService: ApiService) { }
 
   ngOnInit(): void {
-    this.apiService.obtenerDatos().subscribe(
-      (data) => {
-        this.datos = data;
-        console.log('Datos obtenidos:', this.datos);
-      },
-      (error) => {
-        console.error('Error al obtener datos:', error);
-      }
-    );
+    // this.apiService.obtenerDatos().subscribe(
+    //   (data) => {
+    //     this.datos = data;
+    //     console.log('Datos obtenidos:', this.datos);
+    //   },
+    //   (error) => {
+    //     console.error('Error al obtener datos:', error);
+    //   }
+    // );
   }
 
   cerrarRecuadro(): void {
