@@ -28,6 +28,8 @@ import { SignupComponent } from './pages/signup/signup.component';
 import { ConfigComponent } from './pages/config/config.component';
 import { PostComponent } from './pages/publication/post/post.component';
 import { NotfoundComponent } from './pages/notfound/notfound.component';
+import { RecuadroComponent } from './layout/recuadro/recuadro.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,7 @@ import { NotfoundComponent } from './pages/notfound/notfound.component';
     ConfigComponent,
     PostComponent,
     NotfoundComponent,
+    RecuadroComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,7 +62,8 @@ import { NotfoundComponent } from './pages/notfound/notfound.component';
     MatIconModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule
   ],
   providers: [
     {

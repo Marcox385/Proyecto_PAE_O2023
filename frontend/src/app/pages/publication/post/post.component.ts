@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PostService } from 'src/app/services/publics/post.service';
+import { PostService } from 'src/app/shared/services/publics/post.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -16,10 +16,9 @@ export class PostComponent implements OnInit {
   ) {
     // Inicializar el formulario principal
     this.publicacionForm = this.fb.group({
-      titulo: ['', Validators.required],
-      code: [''],
-      etiquetas: [''],
-      descripcion: ['', Validators.required],
+      title: ['', Validators.required],
+      tags: [''],
+      description: ['', Validators.required],
     });
   }
   ngOnInit(): void {
@@ -31,10 +30,9 @@ export class PostComponent implements OnInit {
     const date = new Date().toISOString();
 
     const newPublication = {
-      title: this.publicacionForm.value.titulo,
-      tags: this.publicacionForm.value.etiquetas,
-      code: this.publicacionForm.value.code,
-      description: this.publicacionForm.value.descripcion,
+      title: this.publicacionForm.value.title,
+      tags: this.publicacionForm.value.tags,
+      description: this.publicacionForm.value.description,
       user: userName,
       date: date,
     };

@@ -12,7 +12,7 @@ export class PublicationService {
   constructor(private http: HttpClient) { }
 
   getPublicationById(id: string): Observable<any> {
-    const url = `${this.apiUrl}/publications/${id}`; // Ajusta la URL según tu API
+    const url = `${this.apiUrl}/post/${id}`; // Ajusta la URL según tu API
     return this.http.get(url);
   }
 }

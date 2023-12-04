@@ -5,19 +5,15 @@
     </div>
     <div class="post">
         <div class="post-user">
-            <span> <i class="fa fa-user" aria-hidden="true"></i> Juan </span>
+            <!-- <span> <i class="fa fa-user" aria-hidden="true"></i> {{publicationData?.user}} </span> -->
         </div>
         <div class="description">
             <!-- Muestra la descripción de la publicación -->
-            <p>{{ publicationData?.description }}</p>
-        </div>
-        <div class="code">
-            <!-- Muestra el contenido de la publicación -->
-            {{ publicationData?.code }}
+            <!-- <p>{{ publicationData?.description }}</p> -->
         </div>
         <div class="tags">
             <!-- Muestra las etiquetas de la publicación -->
-            {{ publicationData?.tags }}
+            <!-- {{ publicationData?.tags }} -->
         </div>
     </div>
     <div class="comments">
@@ -25,5 +21,6 @@
         <h4>Deja un comentario para que la comunidad pueda verlo</h4>
         <textarea id="comments" name="comments"></textarea>
         <button mat-raised-button>Post</button>
+        <button mat-raised-button (click)="gptResponse()">GPT response</button>
     </div>
 </div>

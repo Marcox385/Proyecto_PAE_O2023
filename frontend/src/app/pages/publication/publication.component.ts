@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PublicationService } from 'src/app/services/publics/publication.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PublicationService } from 'src/app/shared/services/publics/publication.service';
+import { RecuadroComponent } from 'src/app/layout/recuadro/recuadro.component';
 
 @Component({
   selector: 'bgc-publication',
@@ -10,7 +12,7 @@ import { PublicationService } from 'src/app/services/publics/publication.service
 export class PublicationComponent implements OnInit {
   publicacionId: string | null = null; // Almacena el id de la publicación
 
-  constructor(private route: ActivatedRoute, private publicationService: PublicationService) { }
+  constructor(private route: ActivatedRoute, private publicationService: PublicationService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -28,6 +30,14 @@ export class PublicationComponent implements OnInit {
           }
         );
       }
+    });
+  }
+
+  gptResponse(): void {
+    this.dialog.open(RecuadroComponent, {
+      width: '400px',
+      height: '600px',
+      data: { /* Puedes pasar datos al recuadro si es necesario */ }
     });
   }
 }

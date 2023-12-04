@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { PostService } from 'src/app/services/publics/post.service';
+import { PostService } from 'src/app/shared/services/publics/post.service';
 
 @Component({
   selector: 'bgc-home',

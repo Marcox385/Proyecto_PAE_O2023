@@ -1,0 +1,9 @@
+<div>
+    <h2>Recuadro</h2>
+    <!-- Mostrar los datos obtenidos de la API -->
+    <div *ngIf="datos">
+        <p>{{ datos.propiedad1 }}</p>
+    </div>
+
+    <button mat-raised-button (click)="cerrarRecuadro()">Cerrar Recuadro</button>
+</div>
