@@ -1,6 +1,8 @@
 <!-- Publicaciones -->
 <div class="posts">
-    <h1>HOME</h1>
+    <h1>!Bienvenid&commat; {{user.username}}!</h1>
+
+    <h2 *ngIf="publications.length == 0">Aún no hay publicaciones disponibles...</h2>
 
     <div class="post" *ngFor="let publication of publications">
         <h2><a (click)="routePublication(publication.id)"> {{ publication.title }} </a> </h2>
